@@ -13,12 +13,10 @@ import javax.swing.JFrame;
 public class App {
     public static void main(String[] args) throws Exception {
         Game game = new Game();
-        JFrame frame = new JFrame("A2_P1");
+        JFrame frame = new JFrame("A2_Q1");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(900, 700);
-
         frame.add(game);
-        // frame.pack();
         frame.setVisible(true);
     }
 }

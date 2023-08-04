@@ -42,10 +42,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-
-
 public class Game extends JPanel implements MouseListener {
-    
+
     private final int TILE_SIZE = 40;
     private final int NUM_ROWS = 16;
     private final int NUM_COLS = 16;
@@ -66,7 +64,7 @@ public class Game extends JPanel implements MouseListener {
     private boolean swamplandSelectionMode;
     private boolean grasslandSelectionMode;
     private Image foodImg;
-    
+
     public Game() {
         // Set the layout manager to a BorderLayout
         setLayout(new BorderLayout());
@@ -86,28 +84,28 @@ public class Game extends JPanel implements MouseListener {
         selectSwampland();
         selectOpenTerrain();
         searchButton();
-        
+
         loadFoodImg();
-        // Add the button panel to the EAST region of the panel with a fixed width of 200 pixels
+
+        // Add the button panel
         add(buttonPanel, BorderLayout.EAST);
         setPreferredSize(new Dimension(getPreferredSize().width + 200, getPreferredSize().height));
 
         startTile = null;
         goalTile = null;
-
         startMovingAnt = false;
-        
         tobeDrawn = new ArrayList<Tile>();
     }
 
     private void loadFoodImg() {
-    try {
-        foodImg = ImageIO.read(new File("food.png"));
+        try {
+            foodImg = ImageIO.read(new File("food.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    // the selection mode of available buttons
     private void selectOpenTerrain() {
         // Create the reset button
         JButton result = new JButton("Select Open Terrain");
@@ -126,7 +124,6 @@ public class Game extends JPanel implements MouseListener {
     }
 
     private void selectSwampland() {
-        // Create the reset button
         JButton result = new JButton("Select Swampland");
         result.addActionListener(new ActionListener() {
             @Override
@@ -153,12 +150,13 @@ public class Game extends JPanel implements MouseListener {
                 obstacleSelectionMode = false;
                 openTerrainSelectionMode = false;
                 swamplandSelectionMode = false;
-                System.out.println("Grassland Button ");
+
             }
         });
         buttonPanel.add(result);
     }
 
+    // search button to start the search algorithm
     private void searchButton() {
         JButton result = new JButton("A* Search");
         result.addActionListener(new ActionListener() {
@@ -170,26 +168,25 @@ public class Game extends JPanel implements MouseListener {
                 obstacleSelectionMode = false;
                 openTerrainSelectionMode = false;
                 swamplandSelectionMode = false;
-                if(startTile == null) {
+                if (startTile == null) {
                     System.out.println("Please select start location");
-                } 
-                if(goalTile == null) {
+                }
+                if (goalTile == null) {
                     System.out.println("Please select goal location");
                 }
 
-                if(startTile != null && goalTile != null) {
-                    ant = new Ant(startTile, goalTile, TILE_SIZE, tiles);    
+                if (startTile != null && goalTile != null) {
+                    ant = new Ant(startTile, goalTile, TILE_SIZE, tiles);
                     ant.search();
                     delayPaint();
                 }
-                
+
             }
         });
         buttonPanel.add(result);
     }
 
     private void selectGoalLocation() {
-        // Create the reset button
         JButton result = new JButton("Select Goal Location");
         result.addActionListener(new ActionListener() {
             @Override
@@ -206,7 +203,6 @@ public class Game extends JPanel implements MouseListener {
     }
 
     public void selectStartLocation() {
-        // Create the reset button
         JButton result = new JButton("Select Start Location");
         result.addActionListener(new ActionListener() {
             @Override
@@ -223,7 +219,6 @@ public class Game extends JPanel implements MouseListener {
     }
 
     public void selectObstacle() {
-        // Create the reset button
         JButton result = new JButton("Select Obstacle");
         result.addActionListener(new ActionListener() {
             @Override
@@ -238,44 +233,42 @@ public class Game extends JPanel implements MouseListener {
         });
         buttonPanel.add(result);
     }
-    
 
     @Override
     public void mouseClicked(MouseEvent e) {
         // Handle mouse clicks on the game panel
-        System.out.println("Mouse clicked at: " + e.getX() + ", " + e.getY());
         int row = e.getX();
         int col = e.getY();
 
-        if (row >= 0 && row < NUM_ROWS*TILE_SIZE && col >= 0 && col < NUM_COLS*TILE_SIZE) {
-           
+        if (row >= 0 && row < NUM_ROWS * TILE_SIZE && col >= 0 && col < NUM_COLS * TILE_SIZE) {
+
             Tile clickedTile = fetchTile(row, col);
-            
-            if(clickedTile != null){
+
+            if (clickedTile != null) {
                 if (startLocationSelectionMode) {
                     handleStartLocationSelection(clickedTile);
-                } else if(goalLocationSelectionMode){
+                } else if (goalLocationSelectionMode) {
                     handleGoalLocationSelection(clickedTile);
-                } else if (obstacleSelectionMode){
+                } else if (obstacleSelectionMode) {
                     clickedTile.setObstacle();
-                } else if (openTerrainSelectionMode){
+                } else if (openTerrainSelectionMode) {
                     clickedTile.setOpenTerrain();
-                } else if (swamplandSelectionMode){
+                } else if (swamplandSelectionMode) {
                     clickedTile.setSwampland();
-                } else if (grasslandSelectionMode){
+                } else if (grasslandSelectionMode) {
                     clickedTile.setGrassland();
                 }
-                repaint(); 
+                repaint();
             } // else the user clicked outside the game board, so do nothing
         } // else the user clicked outside the canvas, so do nothing
     }
 
     private void handleGoalLocationSelection(Tile clickedTile) {
         goalLocationSelectionMode = false;
-        
-        for(int i = 0; i < NUM_ROWS; i++){
-            for(int j = 0; j < NUM_COLS; j++){
-                if(tiles[i][j].isGoal()){
+
+        for (int i = 0; i < NUM_ROWS; i++) {
+            for (int j = 0; j < NUM_COLS; j++) {
+                if (tiles[i][j].isGoal()) {
                     tiles[i][j].resetGoal();
                 }
             }
@@ -285,12 +278,13 @@ public class Game extends JPanel implements MouseListener {
         goalTile = clickedTile;
 
     }
+
     private void handleStartLocationSelection(Tile clickedTile) {
         startLocationSelectionMode = false;
-        
-        for(int i = 0; i < NUM_ROWS; i++){
-            for(int j = 0; j < NUM_COLS; j++){
-                if(tiles[i][j].isStart()){
+
+        for (int i = 0; i < NUM_ROWS; i++) {
+            for (int j = 0; j < NUM_COLS; j++) {
+                if (tiles[i][j].isStart()) {
                     tiles[i][j].resetStart();
                 }
             }
@@ -300,22 +294,22 @@ public class Game extends JPanel implements MouseListener {
         startTile = clickedTile;
         repaint();
     }
-        
-    @Override
-    public void mousePressed(MouseEvent e) {}
-
 
     @Override
-    public void mouseReleased(MouseEvent e) {}
-
-
-    @Override
-    public void mouseEntered(MouseEvent e) {}
-
+    public void mousePressed(MouseEvent e) {
+    }
 
     @Override
-    public void mouseExited(MouseEvent e) {}
+    public void mouseReleased(MouseEvent e) {
+    }
 
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+    }
 
     private void createTiles() {
         tiles = new Tile[NUM_ROWS][NUM_COLS];
@@ -340,18 +334,18 @@ public class Game extends JPanel implements MouseListener {
         return result;
     }
 
+    // delayed timer to animate the ant and making it smoother movement.
     public void delayPaint() {
         int delay = 100; // 1 second delay
         Timer timer = new Timer(delay, new ActionListener() {
             ArrayList<ArrayList<Tile>> allPath2D = ant.getAllPath2D();
             Tile subNodeToBeDrawn = null;
             Tile mainNode;
- 
+
             boolean addMainNode = true;
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                // System.out.println(allPath2D.size());
                 if (allPath2D.isEmpty()) {
                     startMovingAnt = true;
                     tobeDrawn = ant.getPath();
@@ -360,120 +354,95 @@ public class Game extends JPanel implements MouseListener {
                 } else {
 
                     // first remove all subnodes/all neighbor nodes from the main drawing array.
-                    if(subNodeToBeDrawn != null){
+                    if (subNodeToBeDrawn != null) {
                         tobeDrawn.remove(subNodeToBeDrawn);
-                        // System.out.println("removing subnode " + subNodeToBeDrawn.getX() + " " + subNodeToBeDrawn.getY());
                         subNodeToBeDrawn = null;
                     }
-                    
-                    // add main node 
-                    ArrayList<Tile> oneIterationArray = allPath2D.get(0);
-                    // System.out.println("loop "+i+" size1 " + oneIterationArray.size());
 
-                    
-                    if(oneIterationArray.size() > 0 && addMainNode){
+                    // add main node which will stay there parmanently to be drawn.
+                    ArrayList<Tile> oneIterationArray = allPath2D.get(0);
+
+                    if (oneIterationArray.size() > 0 && addMainNode) {
                         mainNode = oneIterationArray.get(0);
                         tobeDrawn.add(mainNode);
                         addMainNode = false;
-                        // System.out.println("adding mainnode " + mainNode.getX() + " " + mainNode.getY());
+
                         // remove main node from the allnodes array
                         oneIterationArray.remove(mainNode);
-                        // System.out.println("loop "+i+" size2 " + oneIterationArray.size());
                     }
-                    
+
                     // split subnodes
-                    if(oneIterationArray.size() > 1) {
-                        
+                    if (oneIterationArray.size() > 1) {
+
                         subNodeToBeDrawn = oneIterationArray.get(0);
                         if (!tobeDrawn.contains(subNodeToBeDrawn)) { // checking if subnode is already in the list
                             tobeDrawn.add(subNodeToBeDrawn);
-                            // System.out.println("adding subnode " + subNodeToBeDrawn.getX() + " " + subNodeToBeDrawn.getY());
                             oneIterationArray.remove(subNodeToBeDrawn);
                         }
-                        
-                        // System.out.println("loop "+i+" size4 " + oneIterationArray.size());
-                    
-                    } 
-                    if(oneIterationArray.size() == 1) {
-                        allPath2D.remove(0); 
+
+                    }
+
+                    // if last subnode is left, remove it anlong with the main row.
+                    if (oneIterationArray.size() == 1) {
+                        allPath2D.remove(0);
                         addMainNode = true;
-                        // System.out.println("loop "+i+" size3 " + oneIterationArray.size());
-                    } else if (oneIterationArray.size() == 0 && allPath2D.size() == 1){
+                    } else if (oneIterationArray.size() == 0 && allPath2D.size() == 1) {
                         allPath2D.remove(0);
                     }
-                    // System.out.println();
                 }
                 repaint();
-                // System.out.println("repainting 1");
-                // i++;
-                
             } // end of action performed
         });
         timer.start();
     }
+
+    // animate the ant from start to goal
     public void animateAnt() {
         if (startMovingAnt) {
-            System.out.println("start moving ant");
             double speed = 1.5;
             int delay = 10; // 0.1 second delay
             ArrayList<Tile> path = ant.getPath();
 
             // set the ant to the start location
-            ant.setX(path.get(path.size()-1).getX() * TILE_SIZE);
-            ant.setY(path.get(path.size()-1).getY() * TILE_SIZE);
+            ant.setX(path.get(path.size() - 1).getX() * TILE_SIZE);
+            ant.setY(path.get(path.size() - 1).getY() * TILE_SIZE);
 
-            Timer timer = new Timer(delay, new ActionListener() {    
+            Timer timer = new Timer(delay, new ActionListener() {
                 int i;
-                    
+
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                                       
-                    if(!path.isEmpty()) {
-                        
+
+                    if (!path.isEmpty()) {
+
                         i = path.size() - 1;
 
-                        // Tile currentTile = path.get(i);
                         Tile nextTile = path.get(i);
-                        System.out.println("nextTile: " + nextTile.getX() + " " + nextTile.getY());
+
                         double dx = nextTile.getX() * TILE_SIZE - ant.getX();
                         double dy = nextTile.getY() * TILE_SIZE - ant.getY();
 
-                        // System.out.println("dx: " + dx + " dy: " + dy);
-                        // // System.out.println("currentTile x: " + currentTile.getX() + " currentTile y: " + currentTile.getY() + " nextTile x: " + nextTile.getX() + " nextTile y: " + nextTile.getY() + " dx: " + dx + " dy: " + dy);
-                        
-                        //angle from current tile to next tile
+                        // angle from current tile to next tile
                         double angle = Math.atan2(dy, dx);
-                        // System.out.println("angle: " + angle);
+                        double distance = Math.sqrt((dx * dx) + (dy * dy));
 
-                        // // distance between the ant to the next tile
-                        // double antDx = nextTile.getX()* TILE_SIZE - ant.getX();
-                        // double antDy = nextTile.getY()* TILE_SIZE - ant.getY();
-
-                        double distance = Math.sqrt( (dx * dx) + (dy * dy) );
-                        // System.out.println("distance: " + distance);
-                        // // increment the ant's x and y coordinates by 1 pixel in the direction of the next tile
-                        System.out.println("ant x: " + ant.getX() + " ant y: " + ant.getY() + " angle: " + angle + " distance: " + distance);
                         double newAntX = ant.getX() + speed * Math.cos(angle);
                         double newAntY = ant.getY() + speed * Math.sin(angle);
-                        System.out.println("newAntX: " + newAntX + " newAntY: " + newAntY);
- 
-                        
 
-                        // System.out.println("ant x: " + ant.getX() + " ant y: " + ant.getY() + " angle: " + angle + " distance: " + distance + " newAntX: " + newAntX + " newAntY: " + newAntY);
-
-
+                        // if the ant is close to the next tile, remove the tile from the path
                         if (distance < speed) {
                             path.remove(i);
                         } else {
-                            ant.setX((int)newAntX);
-                            ant.setY((int)newAntY);
+                            // move the ant
+                            ant.setX((int) newAntX);
+                            ant.setY((int) newAntY);
                         }
-                        
+
                         repaint();
-                        // System.out.println("repainting 2");
                     } else {
                         ((Timer) e.getSource()).stop();
                     }
+
                 }
             });
             timer.start();
@@ -483,7 +452,7 @@ public class Game extends JPanel implements MouseListener {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        
+
         // draw tiles
         for (int i = 0; i < NUM_ROWS; i++) {
             for (int j = 0; j < NUM_COLS; j++) {
@@ -491,43 +460,40 @@ public class Game extends JPanel implements MouseListener {
             }
         }
 
-        if(ant != null){
+        // draw food
+        if (goalTile != null && goalTile.isGoal()) {
+            g.drawImage(foodImg, goalTile.getX() * TILE_SIZE, goalTile.getY() * TILE_SIZE, TILE_SIZE, TILE_SIZE, null);
+        }
+
+        // draw ant
+        if (ant != null) {
             ant.draw(g, TILE_SIZE);
-            System.out.println("ant x: " + ant.getX() + " ant y: " + ant.getY());
         }
 
-        if(goalTile != null && goalTile.isGoal()){
-            g.drawImage(foodImg, goalTile.getX()*TILE_SIZE, goalTile.getY()*TILE_SIZE, TILE_SIZE, TILE_SIZE, null);
-        }
         
-        drawPath(g, TILE_SIZE, tobeDrawn);
-        // drawPath(g, TILE_SIZE, ant.getPath());
 
+        // draw path
+        drawPath(g, TILE_SIZE, tobeDrawn);
     } // end paintComponent
 
     public void drawPath(Graphics g, int tileSize, ArrayList<Tile> arrayList) {
-        
-        // System.out.println("arrayList: " + arrayList);
-        if (arrayList != null && arrayList.size() > 1 ) {
+
+        if (arrayList != null && arrayList.size() > 1) {
             g.setColor(Color.RED);
-            
+
             for (int i = 0; i < arrayList.size() - 1; i++) {
 
-                
                 Tile current = arrayList.get(i);
 
-                Tile next = arrayList.get(i+1);
+                Tile next = arrayList.get(i + 1);
 
-                // System.out.println("current: " + current.getX() + " " + current.getY() + " next: " + next.getX() + " " + next.getY());
-        
-                int x1 = (int)current.getX() * tileSize + tileSize / 2;
-                int y1 = (int)current.getY() * tileSize + tileSize / 2;
-                int x2 = (int)next.getX() * tileSize + tileSize / 2;
-                int y2 = (int)next.getY() * tileSize + tileSize / 2;
+                int x1 = (int) current.getX() * tileSize + tileSize / 2;
+                int y1 = (int) current.getY() * tileSize + tileSize / 2;
+                int x2 = (int) next.getX() * tileSize + tileSize / 2;
+                int y2 = (int) next.getY() * tileSize + tileSize / 2;
 
                 g.drawLine(x1, y1, x2, y2);
                 repaint();
-                // System.out.println("x1: " + x1 + " y1: " + y1 + " x2: " + x2 + " y2: " + y2);
             }
         }
     }
@@ -535,14 +501,5 @@ public class Game extends JPanel implements MouseListener {
     public int getTileSize() {
         return TILE_SIZE;
     }
-
-
-    
-
-
-    
-
-    
-
 
 }// end class

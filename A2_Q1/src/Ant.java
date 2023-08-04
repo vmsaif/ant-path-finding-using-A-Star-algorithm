@@ -50,14 +50,15 @@ public class Ant {
         g.drawImage(antImage, antX, antY, tileSize, tileSize, null);
     }
    
+    // search for the path from start to goal using A* search
     public void search() {
         aStarSearch = new AStarSearch(tiles, this, start, goal);
         path = aStarSearch.search();
     }
 
     public ArrayList<Tile> getPath() {
-        // find the path and store it in path arraylist
         
+        // find the path and store it in path arraylist
         if(path == null){
             this.search();
         }
