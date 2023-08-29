@@ -33,7 +33,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import javax.swing.Timer;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -47,7 +47,7 @@ public class Game extends JPanel implements MouseListener {
 
     private Ant ant;
     private Tile[][] tiles;
-    private ArrayList<Tile> tobeDrawn;
+    private LinkedList<Tile> tobeDrawn;
     private boolean startMovingAnt;
 
     private Tile startTile;
@@ -91,7 +91,7 @@ public class Game extends JPanel implements MouseListener {
         startTile = null;
         goalTile = null;
         startMovingAnt = false;
-        tobeDrawn = new ArrayList<Tile>();
+        tobeDrawn = new LinkedList<Tile>();
     }
 
     private void loadFoodImg() {
@@ -335,7 +335,7 @@ public class Game extends JPanel implements MouseListener {
     public void delayPaint() {
         int delay = 100; // 1 second delay
         Timer timer = new Timer(delay, new ActionListener() {
-            ArrayList<ArrayList<Tile>> allPath2D = ant.getAllPath2D();
+            LinkedList<LinkedList<Tile>> allPath2D = ant.getAllPath2D();
             Tile subNodeToBeDrawn = null;
             Tile mainNode;
 
@@ -357,7 +357,7 @@ public class Game extends JPanel implements MouseListener {
                     }
 
                     // add main node which will stay there parmanently to be drawn.
-                    ArrayList<Tile> oneIterationArray = allPath2D.get(0);
+                    LinkedList<Tile> oneIterationArray = allPath2D.get(0);
 
                     if (oneIterationArray.size() > 0 && addMainNode) {
                         mainNode = oneIterationArray.get(0);
@@ -398,7 +398,7 @@ public class Game extends JPanel implements MouseListener {
         if (startMovingAnt) {
             double speed = 1.5;
             int delay = 10; // 0.1 second delay
-            ArrayList<Tile> path = ant.getPath();
+            LinkedList<Tile> path = ant.getPath();
 
             // set the ant to the start location
             ant.setX(path.get(path.size() - 1).getX() * TILE_SIZE);
@@ -473,16 +473,16 @@ public class Game extends JPanel implements MouseListener {
         drawPath(g, TILE_SIZE, tobeDrawn);
     } // end paintComponent
 
-    public void drawPath(Graphics g, int tileSize, ArrayList<Tile> arrayList) {
+    public void drawPath(Graphics g, int tileSize, LinkedList<Tile> LinkedList) {
 
-        if (arrayList != null && arrayList.size() > 1) {
+        if (LinkedList != null && LinkedList.size() > 1) {
             g.setColor(Color.RED);
 
-            for (int i = 0; i < arrayList.size() - 1; i++) {
+            for (int i = 0; i < LinkedList.size() - 1; i++) {
 
-                Tile current = arrayList.get(i);
+                Tile current = LinkedList.get(i);
 
-                Tile next = arrayList.get(i + 1);
+                Tile next = LinkedList.get(i + 1);
 
                 int x1 = (int) current.getX() * tileSize + tileSize / 2;
                 int y1 = (int) current.getY() * tileSize + tileSize / 2;

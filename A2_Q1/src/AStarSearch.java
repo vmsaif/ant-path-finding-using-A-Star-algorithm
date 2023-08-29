@@ -1,5 +1,5 @@
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 import javax.swing.JPanel;
 
@@ -9,7 +9,7 @@ public class AStarSearch extends JPanel {
     private Tile start;
     private Tile goal;
     private Ant ant;
-    private ArrayList<ArrayList<Tile>> allPath2D = new ArrayList<ArrayList<Tile>>();
+    private LinkedList<LinkedList<Tile>> allPath2D = new LinkedList<LinkedList<Tile>>();
 
     public AStarSearch(Tile[][] tiles, Ant ant, Tile start, Tile goal) {
         this.tiles = tiles;
@@ -18,10 +18,10 @@ public class AStarSearch extends JPanel {
         this.ant = ant;
     }
 
-    public ArrayList<Tile> search() {
+    public LinkedList<Tile> search() {
 
-        ArrayList<Tile> output = new ArrayList<>();
-        ArrayList<Tile> closedSet = new ArrayList<>();
+        LinkedList<Tile> output = new LinkedList<>();
+        LinkedList<Tile> closedSet = new LinkedList<>();
 
         // create openSet and add start to it
         PriorityQueue<Tile> openSet = new PriorityQueue<Tile>();
@@ -35,7 +35,7 @@ public class AStarSearch extends JPanel {
         // while openSet is not empty
         while (openSet.size() > 0 && foundGoal == false && noPath == false) {
             // create a row for each iteration for drawing purposes
-            ArrayList<Tile> row = new ArrayList<>();
+            LinkedList<Tile> row = new LinkedList<>();
 
             // check if first element in openSet is goal
             Tile current = openSet.poll();
@@ -172,8 +172,8 @@ public class AStarSearch extends JPanel {
         return neighbors;
     }
 
-    public ArrayList<Tile> reconstructPath(Tile current) {
-        ArrayList<Tile> path = new ArrayList<>();
+    public LinkedList<Tile> reconstructPath(Tile current) {
+        LinkedList<Tile> path = new LinkedList<>();
 
         while (current != null) {
             path.add(current);

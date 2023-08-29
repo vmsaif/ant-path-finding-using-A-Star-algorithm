@@ -7,7 +7,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
 
@@ -19,11 +19,11 @@ public class Ant {
     private Tile goal;
     private Tile[][] tiles;
     private Image antImage;
-    private ArrayList<Tile> path;
+    private LinkedList<Tile> path;
     private Graphics g;
 
     private AStarSearch aStarSearch;
-    private ArrayList<ArrayList<Tile>> allPath2D = new ArrayList<ArrayList<Tile>>();
+    private LinkedList<LinkedList<Tile>> allPath2D = new LinkedList<LinkedList<Tile>>();
 
     public Ant(Tile start, Tile goal, int tileSize, Tile[][] tiles) {
         this.start = start;
@@ -52,9 +52,9 @@ public class Ant {
         path = aStarSearch.search();
     }
 
-    public ArrayList<Tile> getPath() {
+    public LinkedList<Tile> getPath() {
         
-        // find the path and store it in path arraylist
+        // find the path and store it in path LinkedList
         if(path == null){
             this.search();
         }
@@ -62,11 +62,11 @@ public class Ant {
     }
 
 
-    public void setAllPath2D(ArrayList<ArrayList<Tile>> allPath2D) {
+    public void setAllPath2D(LinkedList<LinkedList<Tile>> allPath2D) {
         this.allPath2D = allPath2D;
     }
 
-    public ArrayList<ArrayList<Tile>> getAllPath2D() {
+    public LinkedList<LinkedList<Tile>> getAllPath2D() {
         return allPath2D;
     }
 
