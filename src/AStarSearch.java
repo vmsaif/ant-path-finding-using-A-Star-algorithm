@@ -174,7 +174,6 @@ public class AStarSearch extends JPanel {
 
     public LinkedList<Tile> reconstructPath(Tile current) {
         LinkedList<Tile> path = new LinkedList<>();
-        System.out.println("Path found");
         while (current != null) {
             path.add(current);
 

@@ -333,7 +333,7 @@ public class Game extends JPanel implements MouseListener {
 
     // delayed timer to animate the ant and making it smoother movement.
     public void delayPaint() {
-        int delay = 100; // 1 second delay
+        int delay = 150; 
         Timer timer = new Timer(delay, new ActionListener() {
             LinkedList<LinkedList<Tile>> allPath2D = ant.getAllPath2D();
             Tile subNodeToBeDrawn = null;
