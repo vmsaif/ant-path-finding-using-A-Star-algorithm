@@ -1,0 +1,26 @@
+# Compiled class file
+*.class
+
+    "java.codeGeneration.generateJavadocCustomTagValueValueValueValueTag": true,
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+    "java.codeGeneration.generateJavadocCustomTagValueValueValueValueDocRoot": true,
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+
+    "java.codeGeneration.generateJavadocCustomTagValueValueValueValueInheritDoc": true,
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# Visual Studio Code files
+.vscode/*
