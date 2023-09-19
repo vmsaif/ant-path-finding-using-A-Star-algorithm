@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Ant_Path_Finding
+Exec=/opt/connect4/bin/antPathfinding
+Icon=/opt/connect4/antPathfinding-512.png
+Comment=Play Connect4 game
+Terminal=false
+Categories=Game;

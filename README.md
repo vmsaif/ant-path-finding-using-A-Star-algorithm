@@ -29,6 +29,7 @@ The game uses a simple state machine to manage the different states of the game.
 ## Resources
 
 ### Images
+- [App Icon](https://www.flaticon.com/free-icon/ant_1779584)
 - [Ant Image](https://www.pngegg.com/en/png-zblks)
 - [Food Image](https://www.pngegg.com/en/png-medpx)
 
