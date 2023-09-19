@@ -6,8 +6,8 @@ on:
       - 'v*'
 
 env:
-  FILE_NAME: antPathfinding
-  ICON_NAME: antPathfinding-512
+  FILE_NAME: ant_path_finding # Name of the JAR file (All lowercase, no spaces)
+  ICON_NAME: antPathFinding-512
   MAIN_CLASS: App
   OUT_DIR: out
   VERSION: ${{ github.ref_name }}
@@ -180,6 +180,7 @@ jobs:
         distribution: 'temurin'
 
     - name: Create Standalone for Windows
+      shell: powershell
       run: |
         jpackage --input out `
                 --name ${{ env.FILE_NAME }} `
