@@ -140,7 +140,6 @@ jobs:
                   --main-class ${{ env.MAIN_CLASS }} \
                   --resource-dir assets \
                   --icon assets/icon/${{ env.ICON_NAME }}.png \
-                  --resource-dir resources \
                   --app-version ${{ needs.build.outputs.stripped_version }} \
                   --type deb \
                   --dest .
