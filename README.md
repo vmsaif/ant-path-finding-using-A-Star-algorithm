@@ -159,3 +159,29 @@ At this point, windows smart screen will block the app from running. As I am not
    ```
 
 In all cases, once the commands are followed, the Java application packaged inside the JAR file should start running.
+
+## UNINSTALLING THE PROGRAM
+
+### Windows
+
+1. Open the Control Panel.
+2. Click on "Programs and Features".
+3. Select "Ant Path Finding" from the list.
+4. Click on "Uninstall".
+
+### macOS
+
+1. Open Finder.
+2. Click on "Applications".
+3. Right-click on "Ant Path Finding".
+4. Click on "Move to Bin".
+
+### Ubuntu
+
+1. Open the terminal.
+2. Run the following command:
+   ```bash
+   sudo apt-get remove ant-path-finding
+   ```
+3. Enter your password when prompted.
+
