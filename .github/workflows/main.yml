@@ -182,7 +182,6 @@ jobs:
         distribution: 'temurin'
 
     - name: Create Standalone for Windows
-      shell: powershell
       run: |
         jpackage --input out `
                 --verbose `
