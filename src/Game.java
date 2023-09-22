@@ -31,6 +31,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.io.IOException;
 import java.util.LinkedList;
 import javax.swing.Timer;
@@ -38,7 +39,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-public class Game extends JPanel implements MouseListener {
+public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
     private final int TILE_SIZE = 40;
     private final int NUM_ROWS = 16;
@@ -62,6 +63,7 @@ public class Game extends JPanel implements MouseListener {
     private Image foodImg;
     private int buttonCount;
     private boolean noPath;
+    private Tile lastDraggedTile = null;
 
     public Game() {
 
@@ -75,6 +77,7 @@ public class Game extends JPanel implements MouseListener {
 
         createTiles();
         addMouseListener(this);
+        addMouseMotionListener(this);
 
         // Create the buttons
 
@@ -84,8 +87,8 @@ public class Game extends JPanel implements MouseListener {
         selectGrassland();
         selectSwampland();
         selectOpenTerrain();
-        JButton searchButton = searchButton(); // returning the button to enable the button after search
-        resetButton(searchButton); // it will enable the search button after reseting the game
+        searchButton(); // returning the button to enable the button after search
+        resetButton(); // it will enable the search button after reseting the game
 
 
         // load food image
@@ -102,7 +105,7 @@ public class Game extends JPanel implements MouseListener {
         tobeDrawn = new LinkedList<Tile>();
     }
 
-    private void resetButton(JButton searchButton) {
+    private void resetButton() {
         JButton result = new JButton("Reset");
         result.addActionListener(new ActionListener() {
             @Override
@@ -113,7 +116,7 @@ public class Game extends JPanel implements MouseListener {
                 noPath = false;
                 startMovingAnt = false;
                 tobeDrawn = new LinkedList<Tile>();
-                searchButton.setEnabled(true);
+                
                 createTiles();
                 repaint();
             }
@@ -202,7 +205,6 @@ public class Game extends JPanel implements MouseListener {
                 if (startTile != null && goalTile != null) {
                     ant = new Ant(startTile, goalTile, TILE_SIZE, tiles);
                     ant.search();
-                    result.setEnabled(false); // Disable the button
                     delayPaint();
                 }
                 
@@ -261,35 +263,6 @@ public class Game extends JPanel implements MouseListener {
         buttonPanel.add(result);
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        // Handle mouse clicks on the game panel
-        int row = e.getX();
-        int col = e.getY();
-
-        if (row >= 0 && row < NUM_ROWS * TILE_SIZE && col >= 0 && col < NUM_COLS * TILE_SIZE) {
-
-            Tile clickedTile = fetchTile(row, col);
-
-            if (clickedTile != null) {
-                if (startLocationSelectionMode) {
-                    handleStartLocationSelection(clickedTile);
-                } else if (goalLocationSelectionMode) {
-                    handleGoalLocationSelection(clickedTile);
-                } else if (obstacleSelectionMode) {
-                    clickedTile.setObstacle();
-                } else if (openTerrainSelectionMode) {
-                    clickedTile.setOpenTerrain();
-                } else if (swamplandSelectionMode) {
-                    clickedTile.setSwampland();
-                } else if (grasslandSelectionMode) {
-                    clickedTile.setGrassland();
-                }
-                repaint();
-            } // else the user clicked outside the game board, so do nothing
-        } // else the user clicked outside the canvas, so do nothing
-    }
-
     private void handleGoalLocationSelection(Tile clickedTile) {
         goalLocationSelectionMode = false;
 
@@ -322,21 +295,61 @@ public class Game extends JPanel implements MouseListener {
         repaint();
     }
 
+    private void changeTileState(MouseEvent e) {
+        int row = e.getX();
+        int col = e.getY();
+
+        if (row >= 0 && row < NUM_ROWS * TILE_SIZE && col >= 0 && col < NUM_COLS * TILE_SIZE) {
+
+            Tile clickedTile = fetchTile(row, col);
+
+            if (clickedTile != null && clickedTile != lastDraggedTile) {
+                lastDraggedTile = clickedTile;
+
+                if (startLocationSelectionMode) {
+                    handleStartLocationSelection(clickedTile);
+                } else if (goalLocationSelectionMode) {
+                    handleGoalLocationSelection(clickedTile);
+                } else if (obstacleSelectionMode) {
+                    clickedTile.setObstacle();
+                } else if (openTerrainSelectionMode) {
+                    clickedTile.setOpenTerrain();
+                } else if (swamplandSelectionMode) {
+                    clickedTile.setSwampland();
+                } else if (grasslandSelectionMode) {
+                    clickedTile.setGrassland();
+                }
+                repaint();
+            }
+        }
+    }
+
     @Override
     public void mousePressed(MouseEvent e) {
+        changeTileState(e);
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        changeTileState(e);
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        lastDraggedTile = null;
     }
 
     @Override
-    public void mouseEntered(MouseEvent e) {
-    }
+    public void mouseClicked(MouseEvent e) {}    
+    
+    @Override
+    public void mouseMoved(MouseEvent e) {}
 
     @Override
-    public void mouseExited(MouseEvent e) {
-    }
+    public void mouseEntered(MouseEvent e) {}
+
+    @Override
+    public void mouseExited(MouseEvent e) {}
 
     private void createTiles() {
         tiles = new Tile[NUM_ROWS][NUM_COLS];
@@ -544,5 +557,7 @@ public class Game extends JPanel implements MouseListener {
     public int getTileSize() {
         return TILE_SIZE;
     }
+
+
 
 }// end class
