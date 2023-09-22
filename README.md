@@ -82,8 +82,10 @@ You can start the game by searching for it in the applications menu named `ant-p
 
 4. **Run the JAR File**:
    ```bash
-   java -jar ant-path-finding-v1.0.0.jar # Replace the filename with the name of the JAR file you downloaded
+   java -Xmx2G -jar ant-path-finding-v1.0.0.jar # Replace the filename with the name of the JAR file you downloaded
    ```
+
+The `-Xmx2G` is used to allocate 2GB of memory to the program. This is required for complex mazes. If you are running the program on a simple maze, you can remove the -Xmx2G argument.
 
 ## **macOS**
 There are 2 methods. Downloading the dmg file or downloading the jar file. 
@@ -120,8 +122,9 @@ Make sure you have JRE installed on your computer. You can download JRE [here](h
 
 4. **Run the JAR File**:
    ```bash
-   java -jar ant-path-finding-v1.0.0.jar # Replace the filename with the name of the JAR file you downloaded
+   java -Xmx2G -jar ant-path-finding-v1.0.0.jar # Replace the filename with the name of the JAR file you downloaded
    ```
+The `-Xmx2G` is used to allocate 2GB of memory to the program. This is required for complex mazes. If you are running the program on a simple maze, you can remove the -Xmx2G argument.
 
 ## **Windows**
 
@@ -155,8 +158,9 @@ At this point, windows smart screen will block the app from running. As I am not
 
 3. **Run the JAR File**:
    ```bash
-   java -jar ant-path-finding-v1.0.0.jar
+   java -Xmx2G -jar ant-path-finding-v1.0.0.jar
    ```
+The `-Xmx2G` is used to allocate 2GB of memory to the program. This is required for complex mazes. If you are running the program on a simple maze, you can remove the -Xmx2G argument.
 
 In all cases, once the commands are followed, the Java application packaged inside the JAR file should start running.
 

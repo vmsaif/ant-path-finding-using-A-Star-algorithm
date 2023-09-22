@@ -113,6 +113,8 @@ public class AStarSearch extends JPanel {
 
         } // end main while loop
 
+
+
         // the list of all paths for drawing purposes
         ant.setAllPath2D(allPath2D);
         return output;

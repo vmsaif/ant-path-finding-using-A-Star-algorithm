@@ -60,27 +60,35 @@ public class Game extends JPanel implements MouseListener {
     private boolean swamplandSelectionMode;
     private boolean grasslandSelectionMode;
     private Image foodImg;
+    private int buttonCount;
+    private boolean noPath;
 
     public Game() {
+
+        buttonCount = 8; // number of buttons
         // Set the layout manager to a BorderLayout
         setLayout(new BorderLayout());
 
         // Create a panel to hold the buttons
         buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(7, 1, 10, 10));
+        buttonPanel.setLayout(new GridLayout(buttonCount, 1, 10, 10));
 
         createTiles();
         addMouseListener(this);
 
         // Create the buttons
+
         selectStartLocation();
         selectGoalLocation();
         selectObstacle();
         selectGrassland();
         selectSwampland();
         selectOpenTerrain();
-        searchButton();
+        JButton searchButton = searchButton(); // returning the button to enable the button after search
+        resetButton(searchButton); // it will enable the search button after reseting the game
 
+
+        // load food image
         loadFoodImg();
 
         // Add the button panel
@@ -90,12 +98,32 @@ public class Game extends JPanel implements MouseListener {
         startTile = null;
         goalTile = null;
         startMovingAnt = false;
+        noPath = false;
         tobeDrawn = new LinkedList<Tile>();
+    }
+
+    private void resetButton(JButton searchButton) {
+        JButton result = new JButton("Reset");
+        result.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startTile = null;
+                goalTile = null;
+                ant = null;
+                noPath = false;
+                startMovingAnt = false;
+                tobeDrawn = new LinkedList<Tile>();
+                searchButton.setEnabled(true);
+                createTiles();
+                repaint();
+            }
+        });
+        buttonPanel.add(result);
     }
 
     private void loadFoodImg() {
         try {
-            foodImg = ImageIO.read(getClass().getResource("/assets/images/food.png"));
+            foodImg = ImageIO.read(getClass().getResource("images/food.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -104,7 +132,7 @@ public class Game extends JPanel implements MouseListener {
     // the selection mode of available buttons
     private void selectOpenTerrain() {
         // Create the reset button
-        JButton result = new JButton("Select Open Terrain");
+        JButton result = new JButton("<html>Select Open Terrain<br/><center><font size='2'>Cost: 0</font></center></html>");
         result.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -120,7 +148,7 @@ public class Game extends JPanel implements MouseListener {
     }
 
     private void selectSwampland() {
-        JButton result = new JButton("Select Swampland");
+        JButton result = new JButton("<html>Select Swampland<br/><center><font size='2'>Cost: 4</font></center></html>");
         result.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -136,7 +164,7 @@ public class Game extends JPanel implements MouseListener {
     }
 
     private void selectGrassland() {
-        JButton result = new JButton("Select Grassland");
+        JButton result = new JButton("<html>Select Grassland<br/><center><font size='2'>Cost: 3</font></center></html>");
         result.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -153,7 +181,7 @@ public class Game extends JPanel implements MouseListener {
     }
 
     // search button to start the search algorithm
-    private void searchButton() {
+    private JButton searchButton() {
         JButton result = new JButton("A* Search");
         result.addActionListener(new ActionListener() {
             @Override
@@ -182,6 +210,7 @@ public class Game extends JPanel implements MouseListener {
             }
         });
         buttonPanel.add(result);
+        return result;
     }
 
     private void selectGoalLocation() {
@@ -217,7 +246,7 @@ public class Game extends JPanel implements MouseListener {
     }
 
     public void selectObstacle() {
-        JButton result = new JButton("Select Obstacle");
+        JButton result = new JButton("<html>Select Obstacle<br/><center><font size='2'>Cost: Impossible</font></center></html>");
         result.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -334,7 +363,7 @@ public class Game extends JPanel implements MouseListener {
 
     // delayed timer to animate the ant and making it smoother movement.
     public void delayPaint() {
-        int delay = 250; 
+        int delay = 50; 
         Timer timer = new Timer(delay, new ActionListener() {
             LinkedList<LinkedList<Tile>> allPath2D = ant.getAllPath2D();
             Tile subNodeToBeDrawn = null;
@@ -344,6 +373,7 @@ public class Game extends JPanel implements MouseListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 if (allPath2D.isEmpty()) {
                     startMovingAnt = true;
                     tobeDrawn = ant.getPath();
@@ -359,7 +389,6 @@ public class Game extends JPanel implements MouseListener {
 
                     // add main node which will stay there parmanently to be drawn.
                     LinkedList<Tile> oneIterationArray = allPath2D.get(0);
-
                     if (oneIterationArray.size() > 0 && addMainNode) {
                         mainNode = oneIterationArray.get(0);
                         tobeDrawn.add(mainNode);
@@ -371,7 +400,6 @@ public class Game extends JPanel implements MouseListener {
 
                     // split subnodes
                     if (oneIterationArray.size() > 1) {
-
                         subNodeToBeDrawn = oneIterationArray.get(0);
                         if (!tobeDrawn.contains(subNodeToBeDrawn)) { // checking if subnode is already in the list
                             tobeDrawn.add(subNodeToBeDrawn);
@@ -387,6 +415,9 @@ public class Game extends JPanel implements MouseListener {
                     } else if (oneIterationArray.size() == 0 && allPath2D.size() == 1) {
                         allPath2D.remove(0);
                     }
+                    if (oneIterationArray.size() == 0 && allPath2D.size() > 0) {
+                        allPath2D.remove(0); // Remove the empty list from allPath2D
+                    }
                 }
                 repaint();
             } // end of action performed
@@ -397,53 +428,59 @@ public class Game extends JPanel implements MouseListener {
     // animate the ant from start to goal
     public void animateAnt() {
         if (startMovingAnt) {
-            double speed = 1.5;
+            double speed = 3.0;
             int delay = 10; // 0.1 second delay
             LinkedList<Tile> path = ant.getPath();
 
-            // set the ant to the start location
-            ant.setX(path.get(path.size() - 1).getX() * TILE_SIZE);
-            ant.setY(path.get(path.size() - 1).getY() * TILE_SIZE);
+            if(path.size() == 0){
+               // draw no path found on the screen
+                noPath = true;
+                
+            } else {
+                // set the ant to the start location
+                ant.setX(path.get(path.size() - 1).getX() * TILE_SIZE);
+                ant.setY(path.get(path.size() - 1).getY() * TILE_SIZE);
 
-            Timer timer = new Timer(delay, new ActionListener() {
-                int i;
+                Timer timer = new Timer(delay, new ActionListener() {
+                    int i;
 
-                @Override
-                public void actionPerformed(ActionEvent e) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
 
-                    if (!path.isEmpty()) {
+                        if (!path.isEmpty()) {
 
-                        i = path.size() - 1;
+                            i = path.size() - 1;
 
-                        Tile nextTile = path.get(i);
+                            Tile nextTile = path.get(i);
 
-                        double dx = nextTile.getX() * TILE_SIZE - ant.getX();
-                        double dy = nextTile.getY() * TILE_SIZE - ant.getY();
+                            double dx = nextTile.getX() * TILE_SIZE - ant.getX();
+                            double dy = nextTile.getY() * TILE_SIZE - ant.getY();
 
-                        // angle from current tile to next tile
-                        double angle = Math.atan2(dy, dx);
-                        double distance = Math.sqrt((dx * dx) + (dy * dy));
+                            // angle from current tile to next tile
+                            double angle = Math.atan2(dy, dx);
+                            double distance = Math.sqrt((dx * dx) + (dy * dy));
 
-                        double newAntX = ant.getX() + speed * Math.cos(angle);
-                        double newAntY = ant.getY() + speed * Math.sin(angle);
+                            double newAntX = ant.getX() + speed * Math.cos(angle);
+                            double newAntY = ant.getY() + speed * Math.sin(angle);
 
-                        // if the ant is close to the next tile, remove the tile from the path
-                        if (distance < speed) {
-                            path.remove(i);
+                            // if the ant is close to the next tile, remove the tile from the path
+                            if (distance < speed) {
+                                path.remove(i);
+                            } else {
+                                // move the ant
+                                ant.setX((int) newAntX);
+                                ant.setY((int) newAntY);
+                            }
+
+                            repaint();
                         } else {
-                            // move the ant
-                            ant.setX((int) newAntX);
-                            ant.setY((int) newAntY);
+                            ((Timer) e.getSource()).stop();
                         }
 
-                        repaint();
-                    } else {
-                        ((Timer) e.getSource()).stop();
                     }
-
-                }
-            });
-            timer.start();
+                });
+                timer.start();
+            }
         }
     }
 
@@ -472,6 +509,14 @@ public class Game extends JPanel implements MouseListener {
 
         // draw path
         drawPath(g, TILE_SIZE, tobeDrawn);
+
+        if(noPath){
+            // write no path found on the screen at the center with increased font size
+            g.setFont(g.getFont().deriveFont(50f));
+            g.setColor(Color.RED);
+            g.drawString("No Path Found", 300, 300);
+        }
+
     } // end paintComponent
 
     public void drawPath(Graphics g, int tileSize, LinkedList<Tile> LinkedList) {
