@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Ant_Path_Finding
-Exec=/opt/ant-path-finding/bin/ant-path-finding
-Icon=/opt/ant-path-finding/antPathfinding-512.png
-Comment=Start ant-path-finding 
-Terminal=false
-Categories=Game;
