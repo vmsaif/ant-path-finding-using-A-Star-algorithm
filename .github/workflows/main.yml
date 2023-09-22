@@ -47,8 +47,7 @@ jobs:
         echo "Main-Class: ${{ env.MAIN_CLASS }}" > customManifest.txt
         jar cvfm ${{ env.OUT_DIR }}/${{ env.FILE_NAME }}-${{ env.VERSION }}.jar \
               customManifest.txt \
-              -C ${{ env.OUT_DIR }} ./ \
-              -C ./ assets/
+              -C ${{ env.OUT_DIR }} ./
 
 
     - name: Upload JAR as Artifact
