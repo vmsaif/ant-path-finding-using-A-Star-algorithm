@@ -184,7 +184,6 @@ jobs:
     - name: Create Standalone for Windows
       run: |
         jpackage --input out `
-                --verbose `
                 --name ${{ env.FILE_NAME }} `
                 --main-jar ${{ env.FILE_NAME }}-${{ env.VERSION }}.jar `
                 --main-class ${{ env.MAIN_CLASS }} `
