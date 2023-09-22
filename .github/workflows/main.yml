@@ -183,7 +183,7 @@ jobs:
 
     - name: Create Standalone for Windows
       run: |
-        jpackage --input out `
+        jpackage --input ${{ env.OUT_DIR }} `
                 --verbose `
                 --name ${{ env.FILE_NAME }} `
                 --main-jar ${{ env.FILE_NAME }}-${{ env.VERSION }}.jar `
@@ -192,7 +192,7 @@ jobs:
                 --win-shortcut `
                 --win-menu `
                 --app-version ${{ needs.build.outputs.stripped_version }} `
-                --type exe `
+                --type msi `
                 --dest .
 
     - name: List contents of out directory (Windows)
@@ -207,8 +207,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ needs.build.outputs.release_upload_url }}
-        asset_path: ${{ env.FILE_NAME }}-${{ needs.build.outputs.stripped_version }}.exe
-        asset_name: ${{ env.FILE_NAME }}-${{ needs.build.outputs.stripped_version }}-windows.exe
+        asset_path: ${{ env.FILE_NAME }}-${{ needs.build.outputs.stripped_version }}.msi
+        asset_name: ${{ env.FILE_NAME }}-${{ needs.build.outputs.stripped_version }}-windows.msi
         asset_content_type: application/octet-stream
 
 
