@@ -123,7 +123,7 @@ public class Game extends JPanel implements MouseListener {
 
     private void loadFoodImg() {
         try {
-            foodImg = ImageIO.read(getClass().getResource("images/food.png"));
+            foodImg = ImageIO.read(getClass().getResource("/assets/images/food.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

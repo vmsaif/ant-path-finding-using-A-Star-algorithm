@@ -35,7 +35,7 @@ public class Ant {
 
     private void loadAntImg() {
         try {
-            antImage = ImageIO.read(getClass().getResource("images/ant.png"));
+            antImage = ImageIO.read(getClass().getResource("/assets/images/ant.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
