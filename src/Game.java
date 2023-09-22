@@ -31,7 +31,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import javax.swing.Timer;
@@ -96,7 +95,7 @@ public class Game extends JPanel implements MouseListener {
 
     private void loadFoodImg() {
         try {
-            foodImg = ImageIO.read(getClass().getResource("assets/images/food.png"));
+            foodImg = ImageIO.read(getClass().getResource("/assets/images/food.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -175,8 +174,10 @@ public class Game extends JPanel implements MouseListener {
                 if (startTile != null && goalTile != null) {
                     ant = new Ant(startTile, goalTile, TILE_SIZE, tiles);
                     ant.search();
+                    result.setEnabled(false); // Disable the button
                     delayPaint();
                 }
+                
 
             }
         });
@@ -490,7 +491,7 @@ public class Game extends JPanel implements MouseListener {
                 int y2 = (int) next.getY() * tileSize + tileSize / 2;
 
                 g.drawLine(x1, y1, x2, y2);
-                repaint();
+                // repaint();
             }
         }
     }
