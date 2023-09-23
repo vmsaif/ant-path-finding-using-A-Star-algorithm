@@ -577,6 +577,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
             g.drawString("No Path Found", 300, 300);
         }
 
+        
         // Draw the elapsed time
         g.setColor(Color.RED); // Sets the color to red.
         g.setFont(new Font("Courier New", Font.PLAIN, 20)); 
