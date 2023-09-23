@@ -19,7 +19,6 @@ public class Ant {
     private Tile[][] tiles;
     private Image antImage;
     private LinkedList<Tile> path;
-    private Graphics g;
 
     private AStarSearch aStarSearch;
     private LinkedList<LinkedList<Tile>> allPath2D = new LinkedList<LinkedList<Tile>>();

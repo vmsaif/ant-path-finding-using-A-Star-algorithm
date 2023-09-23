@@ -10,7 +10,7 @@ public class App {
     public static void main(String[] args) throws Exception {
         
         JFrame frame = new JFrame("Ant Path Finding with A* Algorithm");
-        frame.setSize(1400, 900);
+        frame.setSize(1400, 800);
 
         Game game = new Game(frame);
         
