@@ -33,12 +33,17 @@ public class Tile implements Comparable<Tile> {
     private boolean isSwampland;
     private Tile cameFrom;
     private boolean removeAntImg;
+    private static Color boardDefaultColor = Color.WHITE;
     private Image antImage;
+    private Image foodImg;
+    private Image grasslandImg;
+    private Image swamplandImg;
+    private Image obstacleImg;
 
     public Tile(int x, int y) {
         this.x = x;
         this.y = y;
-
+        
         this.cost = COST_OPEN_TERRAIN;
         isOpenTerrain = true;
         this.cameFrom = null;
@@ -46,7 +51,7 @@ public class Tile implements Comparable<Tile> {
 
     public void draw(Graphics g) {
         if (isObstacle) {
-            g.setColor(Color.BLACK);
+            drawObstacleImage(g);
         } else if (isStart) {
             if (removeAntImg) {
                 g.setColor(Color.LIGHT_GRAY);
@@ -54,17 +59,17 @@ public class Tile implements Comparable<Tile> {
                 drawAntImage(g);
             }
         } else if (isGoal) {
-            g.setColor(Color.WHITE);
+            drawFoodImage(g);
         } else if (isGrassland) {
-            g.setColor(Color.YELLOW);
+            drawGrassland(g);
         } else if (isSwampland) {
-            g.setColor(Color.BLUE);
+            drawSwampland(g);
         } else {
             // open terrain
-            g.setColor(Color.WHITE);
+            g.setColor(boardDefaultColor);
         }
 
-        if(!isStart || removeAntImg){
+        if((!isStart || removeAntImg) && !isGoal){
             g.fillRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
         }
         
@@ -73,12 +78,65 @@ public class Tile implements Comparable<Tile> {
 
     }
 
+    private void drawObstacleImage(Graphics g) {
+        try {
+            if(obstacleImg == null){
+                obstacleImg = ImageIO.read(getClass().getResource("/assets/images/obstacle.png"));
+            }
+            g.setColor(boardDefaultColor);
+            g.fillRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
+            g.drawImage(obstacleImg, getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize(), null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void drawSwampland(Graphics g) {
+        try {
+            if(swamplandImg == null){
+                swamplandImg = ImageIO.read(getClass().getResource("/assets/images/swampland.png"));
+            }
+            g.setColor(boardDefaultColor);
+            g.fillRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
+            g.drawImage(swamplandImg, getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize(), null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void drawGrassland(Graphics g) {
+        try {
+            if(grasslandImg == null){
+                grasslandImg = ImageIO.read(getClass().getResource("/assets/images/grassland.png"));
+            }
+            g.setColor(boardDefaultColor);
+            g.fillRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
+            g.drawImage(grasslandImg, getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize(), null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void drawFoodImage(Graphics g) {
+        try {
+            if(foodImg == null){
+                foodImg = ImageIO.read(getClass().getResource("/assets/images/food.png"));
+            }
+            g.setColor(boardDefaultColor);
+            g.fillRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
+            g.drawImage(foodImg, getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize(), null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void drawAntImage(Graphics g) {
         try {
             if(antImage == null){
                 antImage = ImageIO.read(getClass().getResource("/assets/images/ant.png"));
             }
-            g.setColor(Color.WHITE);
+            g.setColor(boardDefaultColor);
             g.fillRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
             g.drawImage(antImage, getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize(), null);
         } catch (IOException e) {
