@@ -79,6 +79,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     private long elapsedTimeAfterAnimation;
     private String elapsedTimeStringAfterAnimation;
     private boolean antReached;
+    protected boolean startTimer;
 
     public Game(JFrame frame) {
 
@@ -119,6 +120,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         add(buttonPanel, BorderLayout.NORTH);
         setPreferredSize(new Dimension(getPreferredSize().width + 200, getPreferredSize().height));
 
+        startTimer = false;
         startClicked = false;
         startTile = null;
         goalTile = null;
@@ -131,7 +133,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         elapsedTimeStringAfterAnimation = "0:00:000";
         timerX = 100;
         timerY = frame.getHeight() - 100;
-        startTimeBeforeSearch = System.currentTimeMillis();
+        
         setTimerMageCreation();
         setTimerSolving();
     }
@@ -143,12 +145,15 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         result.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                startTimer = false;
                 startTile = null;
                 goalTile = null;
                 ant = null;
                 noPath = false;
                 startMovingAnt = false;
                 tobeDrawn = new LinkedList<Tile>();
+
+                startClicked = false;
                 startTimeBeforeSearch = System.currentTimeMillis();
                 elapsedTimeAfterSearch = 0;
                 elapsedTimeStringBeforeSearch = "0:00:000";
@@ -367,7 +372,12 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {}    
+    public void mouseClicked(MouseEvent e) {
+        if(!startTimer){
+            startTimeBeforeSearch = System.currentTimeMillis();
+            startTimer = true;
+        }
+    }    
     
     @Override
     public void mouseMoved(MouseEvent e) {}
@@ -582,17 +592,20 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         Timer timer = new Timer(delay, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                elapsedTimeAfterSearch = System.currentTimeMillis() - startTimeBeforeSearch;
-                long minutes = (elapsedTimeAfterSearch / 1000) / 60;
-                long seconds = (elapsedTimeAfterSearch / 1000) % 60;
-                long milliseconds = elapsedTimeAfterSearch % 1000;
+                if(startTimer){
+                    elapsedTimeAfterSearch = System.currentTimeMillis() - startTimeBeforeSearch;
+                    long minutes = (elapsedTimeAfterSearch / 1000) / 60;
+                    long seconds = (elapsedTimeAfterSearch / 1000) % 60;
+                    long milliseconds = elapsedTimeAfterSearch % 1000;
 
-                elapsedTimeStringBeforeSearch = String.format("%d:%02d:%03d", minutes, seconds, milliseconds);
-                repaint();
+                    elapsedTimeStringBeforeSearch = String.format("%d:%02d:%03d", minutes, seconds, milliseconds);
+                    repaint();
 
-                if(startClicked){
-                    ((Timer) e.getSource()).stop();
+                    if(startClicked){
+                        ((Timer) e.getSource()).stop();
+                    }
                 }
+                
             }
         });
         timer.start();
