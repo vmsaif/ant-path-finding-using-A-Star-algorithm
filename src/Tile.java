@@ -5,22 +5,26 @@
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 public class Tile implements Comparable<Tile> {
     public static final double COST_OPEN_TERRAIN = 1;
     public static final double COST_GRASSLAND = 3;
     public static final double COST_SWAMPLAND = 4;
     public static final double COST_OBSTACLE = Integer.MAX_VALUE;
-
+    private static int xOffset;
+    private static int yOffset;
 
     private int x;
     private int y;
-    private static int xOffset;
-    private static int yOffset;
+
     private double cost;
-    private double f; //total cost
-    private double g; //cost so far
-    private double h; //heuristic
+    private double f; // total cost
+    private double g; // cost so far
+    private double h; // heuristic
     private boolean isObstacle;
     private boolean isStart;
     private boolean isGoal;
@@ -28,6 +32,8 @@ public class Tile implements Comparable<Tile> {
     private boolean isGrassland;
     private boolean isSwampland;
     private Tile cameFrom;
+    private boolean removeAntImg;
+    private Image antImage;
 
     public Tile(int x, int y) {
         this.x = x;
@@ -38,11 +44,15 @@ public class Tile implements Comparable<Tile> {
         this.cameFrom = null;
     }
 
-    public void draw(Graphics g, int tileSize) {
+    public void draw(Graphics g) {
         if (isObstacle) {
             g.setColor(Color.BLACK);
         } else if (isStart) {
-            g.setColor(Color.GREEN);
+            if (removeAntImg) {
+                g.setColor(Color.LIGHT_GRAY);
+            } else {
+                drawAntImage(g);
+            }
         } else if (isGoal) {
             g.setColor(Color.WHITE);
         } else if (isGrassland) {
@@ -53,9 +63,31 @@ public class Tile implements Comparable<Tile> {
             // open terrain
             g.setColor(Color.WHITE);
         }
-        g.fillRect( ((int)x+xOffset) * tileSize, ((int)y+yOffset) * tileSize, tileSize, tileSize);
+
+        if(!isStart || removeAntImg){
+            g.fillRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
+        }
+        
         g.setColor(Color.BLACK);
-        g.drawRect( ((int)x+xOffset) * tileSize, ((int)y+yOffset) * tileSize, tileSize, tileSize);
+        g.drawRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
+
+    }
+
+    private void drawAntImage(Graphics g) {
+        try {
+            if(antImage == null){
+                antImage = ImageIO.read(getClass().getResource("/assets/images/ant.png"));
+            }
+            g.setColor(Color.WHITE);
+            g.fillRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
+            g.drawImage(antImage, getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize(), null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removeAntImage(Boolean val) {
+        removeAntImg = true;
     }
 
     public static void setxOffset(int offset) {
@@ -74,15 +106,23 @@ public class Tile implements Comparable<Tile> {
         return y;
     }
 
+    public int getXpixel() {
+        return (x * Game.getTileSize()) + xOffset;
+    }
+
+    public int getYpixel() {
+        return (y * Game.getTileSize()) + yOffset;
+    }
+
     public double getCost() {
-        if(isObstacle)
+        if (isObstacle)
             cost = COST_OBSTACLE;
-        else if(isGrassland)
+        else if (isGrassland)
             cost = COST_GRASSLAND;
-        else if(isSwampland)
-            cost =  COST_SWAMPLAND;
-        else if(isOpenTerrain)
-            cost =  COST_OPEN_TERRAIN;
+        else if (isSwampland)
+            cost = COST_SWAMPLAND;
+        else if (isOpenTerrain)
+            cost = COST_OPEN_TERRAIN;
         return cost;
     }
 
@@ -90,11 +130,11 @@ public class Tile implements Comparable<Tile> {
         this.cost = cost;
     }
 
-    public void resetStart(){
+    public void resetStart() {
         isStart = false;
     }
 
-    public void resetGoal(){
+    public void resetGoal() {
         isGoal = false;
     }
 
@@ -202,32 +242,35 @@ public class Tile implements Comparable<Tile> {
         // if f is the same, compare h
         if (result == 0) {
             result = Double.compare(this.h, other.h);
-        
-            if(result == 0){
+
+            if (result == 0) {
                 result = Double.compare(this.g, other.g);
             }
-        } 
-        return result;
-    }
-
-    public Boolean getTile(int mouseX, int mouseY, int tileSize){
-        int pixelXmin = x * tileSize;
-        int pixelYmin = y * tileSize;
-
-        int pixelXmax = pixelXmin + tileSize;
-        int pixelYmax = pixelYmin + tileSize;
-
-        
-        Boolean result = false;
-        if(mouseX >= pixelXmin && mouseX < pixelXmax && mouseY >= pixelYmin && mouseY < pixelYmax){
-            result = true;
         }
         return result;
     }
 
+    public Boolean isWithinTile(int mouseX, int mouseY) {
+        int pixelXmin = getXpixel();
+        int pixelYmin = getYpixel();
+
+        int pixelXmax = pixelXmin + Game.getTileSize();
+        int pixelYmax = pixelYmin + Game.getTileSize();
+
+        return (mouseX >= pixelXmin && mouseX <= pixelXmax && mouseY >= pixelYmin && mouseY <= pixelYmax);
+    }
+
     // for debugging
-    //to string method
+    // to string method
     public String toString() {
         return "Tile: " + x + ", " + y + " Cost: " + cost;
+    }
+
+    public static int getxOffset() {
+        return xOffset;
+    }
+
+    public static int getyOffset() {
+        return yOffset;
     }
 }

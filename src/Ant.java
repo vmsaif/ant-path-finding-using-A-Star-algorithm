@@ -29,8 +29,8 @@ public class Ant {
         this.goal = goal;
         this.tiles = tiles;
         loadAntImg();
-        antX = start.getX()*tileSize;
-        antY = start.getY()*tileSize;
+        antX = start.getXpixel();
+        antY = start.getYpixel();
     }
 
     private void loadAntImg() {

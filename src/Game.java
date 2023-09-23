@@ -24,6 +24,7 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -42,7 +43,7 @@ import javax.swing.JPanel;
 
 public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
-    private final int TILE_SIZE = 40;
+    private final static int TILE_SIZE = 40;
     private final int NUM_ROWS = 16;
     private final int NUM_COLS = 16;
 
@@ -69,15 +70,12 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
     private int timerX;
     private int timerY;
-    private long startTimeBeforeSearch;
 
+    private long startTimeBeforeSearch;
     private long elapsedTimeAfterSearch;
-    
     private String elapsedTimeStringBeforeSearch;
     
-
     private long startTimeBeforeAnimation;
-
     private long elapsedTimeAfterAnimation;
     private String elapsedTimeStringAfterAnimation;
     private boolean antReached;
@@ -93,8 +91,8 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         buttonPanel.setLayout(new GridLayout(1, buttonCount, 10, 10));
 
         // set tile offset
-        int xOffset = (int) ((frame.getWidth() - TILE_SIZE * NUM_COLS) / 2)/TILE_SIZE;
-        int yOffset = (int) ((frame.getHeight() - TILE_SIZE * NUM_ROWS) / 2)/TILE_SIZE;
+        int xOffset = (int) ((frame.getWidth() - TILE_SIZE * NUM_COLS) / 2);
+        int yOffset = (int) ((frame.getHeight() - TILE_SIZE * NUM_ROWS) / 2);
 
         Tile.setxOffset(xOffset);
         Tile.setyOffset(yOffset);
@@ -132,8 +130,8 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         tobeDrawn = new LinkedList<Tile>();
 
         // set timer
-        elapsedTimeStringBeforeSearch = "00:00:000";
-        elapsedTimeStringAfterAnimation = "00:00:000";
+        elapsedTimeStringBeforeSearch = "0:00:000";
+        elapsedTimeStringAfterAnimation = "0:00:000";
         timerX = 100;
         timerY = frame.getHeight() - 100;
         startTimeBeforeSearch = System.currentTimeMillis();
@@ -154,7 +152,14 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                 noPath = false;
                 startMovingAnt = false;
                 tobeDrawn = new LinkedList<Tile>();
+                startTimeBeforeSearch = 0;
+                elapsedTimeAfterSearch = 0;
+                elapsedTimeStringBeforeSearch = "0:00:000";
                 
+                startTimeBeforeAnimation = 0;
+                elapsedTimeAfterAnimation = 0;
+                elapsedTimeStringAfterAnimation = "0:00:000";
+                antReached = false;
                 createTiles();
                 repaint();
             }
@@ -173,7 +178,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     // the selection mode of available buttons
     private void selectOpenTerrain() {
         // Create the reset button
-        JButton result = new JButton("<html>Open Terrain<br/><center><font size='2'>Cost: 0</font></center></html>");
+        JButton result = new JButton("<html>Open Terrain<br/><center><font size='2'>Cost: 1</font></center></html>");
         result.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -243,6 +248,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                 if (startTile != null && goalTile != null) {
                     ant = new Ant(startTile, goalTile, TILE_SIZE, tiles);
                     startClicked = true;
+                    startTimeBeforeAnimation = System.currentTimeMillis();
                     ant.search();
                     delayPaint();
                 }
@@ -305,12 +311,8 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     private void handleGoalLocationSelection(Tile clickedTile) {
         goalLocationSelectionMode = false;
 
-        for (int i = 0; i < NUM_ROWS; i++) {
-            for (int j = 0; j < NUM_COLS; j++) {
-                if (tiles[i][j].isGoal()) {
-                    tiles[i][j].resetGoal();
-                }
-            }
+        if(goalTile != null){
+            goalTile.resetGoal();
         }
         // Set the clicked tile as the start location
         clickedTile.setGoal();
@@ -321,12 +323,8 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     private void handleStartLocationSelection(Tile clickedTile) {
         startLocationSelectionMode = false;
 
-        for (int i = 0; i < NUM_ROWS; i++) {
-            for (int j = 0; j < NUM_COLS; j++) {
-                if (tiles[i][j].isStart()) {
-                    tiles[i][j].resetStart();
-                }
-            }
+        if(startTile != null){
+            startTile.resetStart();
         }
         // Set the clicked tile as the start location
         clickedTile.setStart();
@@ -337,29 +335,26 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     private void changeTileState(MouseEvent e) {
         int row = e.getX();
         int col = e.getY();
+        
+        Tile clickedTile = fetchTile(row, col);
 
-        if (row >= 0 && row < NUM_ROWS * TILE_SIZE && col >= 0 && col < NUM_COLS * TILE_SIZE) {
+        if (clickedTile != null && clickedTile != lastDraggedTile) {
+            lastDraggedTile = clickedTile;
 
-            Tile clickedTile = fetchTile(row, col);
-
-            if (clickedTile != null && clickedTile != lastDraggedTile) {
-                lastDraggedTile = clickedTile;
-
-                if (startLocationSelectionMode) {
-                    handleStartLocationSelection(clickedTile);
-                } else if (goalLocationSelectionMode) {
-                    handleGoalLocationSelection(clickedTile);
-                } else if (obstacleSelectionMode) {
-                    clickedTile.setObstacle();
-                } else if (openTerrainSelectionMode) {
-                    clickedTile.setOpenTerrain();
-                } else if (swamplandSelectionMode) {
-                    clickedTile.setSwampland();
-                } else if (grasslandSelectionMode) {
-                    clickedTile.setGrassland();
-                }
-                repaint();
+            if (startLocationSelectionMode) {
+                handleStartLocationSelection(clickedTile);
+            } else if (goalLocationSelectionMode) {
+                handleGoalLocationSelection(clickedTile);
+            } else if (obstacleSelectionMode) {
+                clickedTile.setObstacle();
+            } else if (openTerrainSelectionMode) {
+                clickedTile.setOpenTerrain();
+            } else if (swamplandSelectionMode) {
+                clickedTile.setSwampland();
+            } else if (grasslandSelectionMode) {
+                clickedTile.setGrassland();
             }
+            repaint();
         }
     }
 
@@ -392,7 +387,6 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
     private void createTiles() {
         tiles = new Tile[NUM_ROWS][NUM_COLS];
-        
 
         for (int i = 0; i < NUM_ROWS; i++) {
             for (int j = 0; j < NUM_COLS; j++) {
@@ -403,11 +397,12 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     }
 
     private Tile fetchTile(int mouseX, int mouseY) {
+        
         Tile result = null;
         for (int i = 0; i < NUM_ROWS; i++) {
             for (int j = 0; j < NUM_COLS; j++) {
                 Tile tile = tiles[i][j];
-                if (tile.getTile(mouseX, mouseY, TILE_SIZE)) {
+                if (tile.isWithinTile(mouseX, mouseY)) {
                     result = tile;
                 }
             }
@@ -432,7 +427,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                     startMovingAnt = true;
                     tobeDrawn = ant.getPath();
                     ((Timer) e.getSource()).stop();
-                    startTimeBeforeAnimation = System.currentTimeMillis();
+                    
                     animateAnt();
                 } else {
 
@@ -492,9 +487,14 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                 noPath = true;
                 
             } else {
+                // first remove the start tile static image
+                path.get(path.size() - 1).removeAntImage(true);
+
                 // set the ant to the start location
-                ant.setX(path.get(path.size() - 1).getX() * TILE_SIZE);
-                ant.setY(path.get(path.size() - 1).getY() * TILE_SIZE);
+                ant.setX(path.get(path.size() - 1).getXpixel());
+                ant.setY(path.get(path.size() - 1).getYpixel());
+
+                
 
                 Timer timer = new Timer(delay, new ActionListener() {
                     int i;
@@ -508,8 +508,8 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
                             Tile nextTile = path.get(i);
 
-                            double dx = nextTile.getX() * TILE_SIZE - ant.getX();
-                            double dy = nextTile.getY() * TILE_SIZE - ant.getY();
+                            double dx = nextTile.getXpixel() - ant.getX();
+                            double dy = nextTile.getYpixel() - ant.getY();
 
                             // angle from current tile to next tile
                             double angle = Math.atan2(dy, dx);
@@ -521,6 +521,11 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                             // if the ant is close to the next tile, remove the tile from the path
                             if (distance < speed) {
                                 path.remove(i);
+
+                                // if the ant reached the goal, stop the timer
+                                if (path.isEmpty()) {
+                                    antReached = true;
+                                }
                             } else {
                                 // move the ant
                                 ant.setX((int) newAntX);
@@ -548,21 +553,19 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         // draw tiles
         for (int i = 0; i < NUM_ROWS; i++) {
             for (int j = 0; j < NUM_COLS; j++) {
-                tiles[i][j].draw(g, TILE_SIZE);
+                tiles[i][j].draw(g);
             }
         }
 
         // draw food
         if (goalTile != null && goalTile.isGoal()) {
-            g.drawImage(foodImg, goalTile.getX() * TILE_SIZE, goalTile.getY() * TILE_SIZE, TILE_SIZE, TILE_SIZE, null);
+            g.drawImage(foodImg, goalTile.getXpixel(), goalTile.getYpixel(), TILE_SIZE, TILE_SIZE, null);
         }
 
         // draw ant
         if (ant != null) {
             ant.draw(g, TILE_SIZE);
         }
-
-        
 
         // draw path
         drawPath(g, TILE_SIZE, tobeDrawn);
@@ -575,10 +578,8 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         }
 
         // Draw the elapsed time
-        
-        
-        
         g.setColor(Color.RED); // Sets the color to red.
+        g.setFont(new Font("Courier New", Font.PLAIN, 20)); 
         g.drawString("Mage Create: "+elapsedTimeStringBeforeSearch, timerX, timerY);
         g.drawString("Solved Time: "+elapsedTimeStringAfterAnimation, timerX, timerY + 20);
 
@@ -639,11 +640,11 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                 Tile current = LinkedList.get(i);
 
                 Tile next = LinkedList.get(i + 1);
-
-                int x1 = (int) current.getX() * tileSize + tileSize / 2;
-                int y1 = (int) current.getY() * tileSize + tileSize / 2;
-                int x2 = (int) next.getX() * tileSize + tileSize / 2;
-                int y2 = (int) next.getY() * tileSize + tileSize / 2;
+                System.out.println("current: " + current.getXpixel() + ", " + current.getYpixel());
+                int x1 = (int) current.getXpixel() + tileSize / 2;
+                int y1 = (int) current.getYpixel() + tileSize / 2;
+                int x2 = (int) next.getXpixel() + tileSize / 2;
+                int y2 = (int) next.getYpixel() + tileSize / 2;
 
                 g.drawLine(x1, y1, x2, y2);
                 // repaint();
@@ -651,7 +652,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         }
     }
 
-    public int getTileSize() {
+    public static int getTileSize() {
         return TILE_SIZE;
     }
 
