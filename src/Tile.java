@@ -55,6 +55,7 @@ public class Tile implements Comparable<Tile> {
         } else if (isStart) {
             if (removeAntImg) {
                 g.setColor(Color.LIGHT_GRAY);
+                g.fillRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
             } else {
                 drawAntImage(g);
             }
@@ -67,11 +68,12 @@ public class Tile implements Comparable<Tile> {
         } else {
             // open terrain
             g.setColor(boardDefaultColor);
-        }
-
-        if((!isStart || removeAntImg) && !isGoal){
             g.fillRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
         }
+
+        // if((!isStart || removeAntImg) && !isGoal){
+            
+        // }
         
         g.setColor(Color.BLACK);
         g.drawRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());

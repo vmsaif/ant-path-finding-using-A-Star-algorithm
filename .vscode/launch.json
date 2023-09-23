@@ -6,6 +6,14 @@
     "configurations": [
         {
             "type": "java",
+            "name": "App",
+            "request": "launch",
+            "mainClass": "App",
+            "vmArgs": "-Xmx2G",
+            "projectName": "ant-path-finding-using-A-Star-algorithm_635c1bc2"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
