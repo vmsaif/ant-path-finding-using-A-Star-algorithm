@@ -46,6 +46,11 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     private final static int TILE_SIZE = 40;
     private final int NUM_ROWS = 16;
     private final int NUM_COLS = 16;
+    private int obstacleCount;
+    private int swamplandCount;
+    private int grasslandCount;
+    private int openTerrainCount;
+
 
     private Ant ant;
     private Tile[][] tiles;
@@ -70,6 +75,8 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
     private int timerX;
     private int timerY;
+    private int terrainCountX;
+    private int terrainCountY;
 
     private long startTimeBeforeSearch;
     private long elapsedTimeAfterSearch;
@@ -127,12 +134,19 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         startMovingAnt = false;
         noPath = false;
         tobeDrawn = new LinkedList<Tile>();
+        obstacleCount = 0;
+        swamplandCount = 0;
+        grasslandCount = 0;
+        openTerrainCount = 0;
 
         // set timer
         elapsedTimeStringBeforeSearch = "0:00:000";
         elapsedTimeStringAfterAnimation = "0:00:000";
         timerX = 100;
         timerY = frame.getHeight() - 100;
+
+        terrainCountX = frame.getWidth() - 300;
+        terrainCountY = frame.getHeight() - 150;
         
         setTimerMageCreation();
         setTimerSolving();
@@ -152,6 +166,10 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                 noPath = false;
                 startMovingAnt = false;
                 tobeDrawn = new LinkedList<Tile>();
+                obstacleCount = 0;
+                swamplandCount = 0;
+                grasslandCount = 0;
+                openTerrainCount = 0;
 
                 startClicked = false;
                 startTimeBeforeSearch = System.currentTimeMillis();
@@ -553,12 +571,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // draw tiles
-        for (int i = 0; i < NUM_ROWS; i++) {
-            for (int j = 0; j < NUM_COLS; j++) {
-                tiles[i][j].draw(g);
-            }
-        }
+        printBoardAndCount(g);
 
         
 
@@ -584,8 +597,46 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         g.drawString("Mage Create: "+elapsedTimeStringBeforeSearch, timerX, timerY);
         g.drawString("Solved Time: "+elapsedTimeStringAfterAnimation, timerX, timerY + 20);
 
+        // draw the counts of each terrain
+        g.setColor(Color.BLACK);
+        g.setFont(new Font("Courier New", Font.PLAIN, 20));
+        g.drawString("Obstacle: "+obstacleCount, terrainCountX, terrainCountY);
+        g.drawString("Swampland: "+swamplandCount, terrainCountX, terrainCountY + 20);
+        g.drawString("Grassland: "+grasslandCount, terrainCountX, terrainCountY + 40);
+        g.drawString("Open Terrain: "+openTerrainCount, terrainCountX, terrainCountY + 60);
+
 
     } // end paintComponent
+
+    private void printBoardAndCount(Graphics g) {
+        // draw tiles and add counter for each terrain
+
+        int obstacle = 0;
+        int swampland = 0;
+        int grassland = 0;
+        int openTerrain = 0;
+        
+        for (int i = 0; i < NUM_ROWS; i++) {
+            for (int j = 0; j < NUM_COLS; j++) {
+                tiles[i][j].draw(g);
+                if(tiles[i][j].isObstacle()){
+                    obstacle++;
+                } else if(tiles[i][j].isSwampland()){
+                    swampland++;
+                } else if(tiles[i][j].isGrassland()){
+                    grassland++;
+                } else if(tiles[i][j].isOpenTerrain()){
+                    openTerrain++;
+                }
+            }
+        }
+        obstacleCount = obstacle;
+        swamplandCount = swampland;
+        grasslandCount = grassland;
+        openTerrainCount = openTerrain;
+    }
+
+
 
     private void setTimerMageCreation() {
         int delay = 50; 
