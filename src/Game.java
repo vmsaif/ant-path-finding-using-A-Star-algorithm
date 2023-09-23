@@ -27,16 +27,16 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.awt.Image;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.io.IOException;
+
 import java.util.LinkedList;
 import javax.swing.Timer;
-import javax.imageio.ImageIO;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -63,7 +63,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     private boolean openTerrainSelectionMode;
     private boolean swamplandSelectionMode;
     private boolean grasslandSelectionMode;
-    private Image foodImg;
+
     private int buttonCount;
     private boolean noPath;
     private Tile lastDraggedTile = null;
@@ -92,7 +92,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
         // set tile offset
         int xOffset = (int) ((frame.getWidth() - TILE_SIZE * NUM_COLS) / 2);
-        int yOffset = (int) ((frame.getHeight() - TILE_SIZE * NUM_ROWS) / 2);
+        int yOffset = (int) ((frame.getHeight() - TILE_SIZE * NUM_ROWS) / 2.5);
 
         Tile.setxOffset(xOffset);
         Tile.setyOffset(yOffset);
@@ -112,11 +112,8 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         searchButton(); // returning the button to enable the button after search
         resetButton(); // it will enable the search button after reseting the game
 
-
-        
-
         // load food image
-        loadFoodImg();
+        // loadFoodImg();
 
         // Add the button panel
         add(buttonPanel, BorderLayout.NORTH);
@@ -152,7 +149,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                 noPath = false;
                 startMovingAnt = false;
                 tobeDrawn = new LinkedList<Tile>();
-                startTimeBeforeSearch = 0;
+                startTimeBeforeSearch = System.currentTimeMillis();
                 elapsedTimeAfterSearch = 0;
                 elapsedTimeStringBeforeSearch = "0:00:000";
                 
@@ -161,19 +158,15 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                 elapsedTimeStringAfterAnimation = "0:00:000";
                 antReached = false;
                 createTiles();
+                setTimerMageCreation();
+                setTimerSolving();
                 repaint();
+
             }
         });
         buttonPanel.add(result);
     }
 
-    private void loadFoodImg() {
-        try {
-            foodImg = ImageIO.read(getClass().getResource("/assets/images/food.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     // the selection mode of available buttons
     private void selectOpenTerrain() {
@@ -557,10 +550,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
             }
         }
 
-        // draw food
-        if (goalTile != null && goalTile.isGoal()) {
-            g.drawImage(foodImg, goalTile.getXpixel(), goalTile.getYpixel(), TILE_SIZE, TILE_SIZE, null);
-        }
+        
 
         // draw ant
         if (ant != null) {
@@ -640,7 +630,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                 Tile current = LinkedList.get(i);
 
                 Tile next = LinkedList.get(i + 1);
-                System.out.println("current: " + current.getXpixel() + ", " + current.getYpixel());
+                
                 int x1 = (int) current.getXpixel() + tileSize / 2;
                 int y1 = (int) current.getYpixel() + tileSize / 2;
                 int x2 = (int) next.getXpixel() + tileSize / 2;
