@@ -15,6 +15,8 @@ public class Tile implements Comparable<Tile> {
 
     private int x;
     private int y;
+    private static int xOffset;
+    private static int yOffset;
     private double cost;
     private double f; //total cost
     private double g; //cost so far
@@ -30,6 +32,7 @@ public class Tile implements Comparable<Tile> {
     public Tile(int x, int y) {
         this.x = x;
         this.y = y;
+
         this.cost = COST_OPEN_TERRAIN;
         isOpenTerrain = true;
         this.cameFrom = null;
@@ -50,9 +53,17 @@ public class Tile implements Comparable<Tile> {
             // open terrain
             g.setColor(Color.WHITE);
         }
-        g.fillRect((int)x * tileSize, (int)y * tileSize, tileSize, tileSize);
+        g.fillRect( ((int)x+xOffset) * tileSize, ((int)y+yOffset) * tileSize, tileSize, tileSize);
         g.setColor(Color.BLACK);
-        g.drawRect((int)x * tileSize, (int)y * tileSize, tileSize, tileSize);
+        g.drawRect( ((int)x+xOffset) * tileSize, ((int)y+yOffset) * tileSize, tileSize, tileSize);
+    }
+
+    public static void setxOffset(int offset) {
+        xOffset = offset;
+    }
+
+    public static void setyOffset(int offset) {
+        yOffset = offset;
     }
 
     public int getX() {

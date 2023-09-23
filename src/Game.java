@@ -37,6 +37,7 @@ import java.util.LinkedList;
 import javax.swing.Timer;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class Game extends JPanel implements MouseListener, MouseMotionListener {
@@ -48,6 +49,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     private Ant ant;
     private Tile[][] tiles;
     private LinkedList<Tile> tobeDrawn;
+    private boolean startClicked;
     private boolean startMovingAnt;
 
     private Tile startTile;
@@ -65,7 +67,22 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     private boolean noPath;
     private Tile lastDraggedTile = null;
 
-    public Game() {
+    private int timerX;
+    private int timerY;
+    private long startTimeBeforeSearch;
+
+    private long elapsedTimeAfterSearch;
+    
+    private String elapsedTimeStringBeforeSearch;
+    
+
+    private long startTimeBeforeAnimation;
+
+    private long elapsedTimeAfterAnimation;
+    private String elapsedTimeStringAfterAnimation;
+    private boolean antReached;
+
+    public Game(JFrame frame) {
 
         buttonCount = 8; // number of buttons
         // Set the layout manager to a BorderLayout
@@ -73,7 +90,14 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
         // Create a panel to hold the buttons
         buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(buttonCount, 1, 10, 10));
+        buttonPanel.setLayout(new GridLayout(1, buttonCount, 10, 10));
+
+        // set tile offset
+        int xOffset = (int) ((frame.getWidth() - TILE_SIZE * NUM_COLS) / 2)/TILE_SIZE;
+        int yOffset = (int) ((frame.getHeight() - TILE_SIZE * NUM_ROWS) / 2)/TILE_SIZE;
+
+        Tile.setxOffset(xOffset);
+        Tile.setyOffset(yOffset);
 
         createTiles();
         addMouseListener(this);
@@ -91,19 +115,33 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         resetButton(); // it will enable the search button after reseting the game
 
 
+        
+
         // load food image
         loadFoodImg();
 
         // Add the button panel
-        add(buttonPanel, BorderLayout.EAST);
+        add(buttonPanel, BorderLayout.NORTH);
         setPreferredSize(new Dimension(getPreferredSize().width + 200, getPreferredSize().height));
 
+        startClicked = false;
         startTile = null;
         goalTile = null;
         startMovingAnt = false;
         noPath = false;
         tobeDrawn = new LinkedList<Tile>();
+
+        // set timer
+        elapsedTimeStringBeforeSearch = "00:00:000";
+        elapsedTimeStringAfterAnimation = "00:00:000";
+        timerX = 100;
+        timerY = frame.getHeight() - 100;
+        startTimeBeforeSearch = System.currentTimeMillis();
+        setTimerMageCreation();
+        setTimerSolving();
     }
+
+
 
     private void resetButton() {
         JButton result = new JButton("Reset");
@@ -135,7 +173,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     // the selection mode of available buttons
     private void selectOpenTerrain() {
         // Create the reset button
-        JButton result = new JButton("<html>Select Open Terrain<br/><center><font size='2'>Cost: 0</font></center></html>");
+        JButton result = new JButton("<html>Open Terrain<br/><center><font size='2'>Cost: 0</font></center></html>");
         result.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -151,7 +189,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     }
 
     private void selectSwampland() {
-        JButton result = new JButton("<html>Select Swampland<br/><center><font size='2'>Cost: 4</font></center></html>");
+        JButton result = new JButton("<html>Swampland<br/><center><font size='2'>Cost: 4</font></center></html>");
         result.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -167,7 +205,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     }
 
     private void selectGrassland() {
-        JButton result = new JButton("<html>Select Grassland<br/><center><font size='2'>Cost: 3</font></center></html>");
+        JButton result = new JButton("<html>Grassland<br/><center><font size='2'>Cost: 3</font></center></html>");
         result.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -204,6 +242,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
                 if (startTile != null && goalTile != null) {
                     ant = new Ant(startTile, goalTile, TILE_SIZE, tiles);
+                    startClicked = true;
                     ant.search();
                     delayPaint();
                 }
@@ -216,7 +255,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     }
 
     private void selectGoalLocation() {
-        JButton result = new JButton("Select Goal Location");
+        JButton result = new JButton("Goal Location");
         result.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -232,7 +271,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     }
 
     public void selectStartLocation() {
-        JButton result = new JButton("Select Start Location");
+        JButton result = new JButton("Start Location");
         result.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -248,7 +287,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     }
 
     public void selectObstacle() {
-        JButton result = new JButton("<html>Select Obstacle<br/><center><font size='2'>Cost: Impossible</font></center></html>");
+        JButton result = new JButton("<html><center>Obstacle<br/><font size='2'>Cost: Impossible</font></center></html>");
         result.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -353,6 +392,8 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
     private void createTiles() {
         tiles = new Tile[NUM_ROWS][NUM_COLS];
+        
+
         for (int i = 0; i < NUM_ROWS; i++) {
             for (int j = 0; j < NUM_COLS; j++) {
                 // all open terrain by default.
@@ -391,6 +432,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                     startMovingAnt = true;
                     tobeDrawn = ant.getPath();
                     ((Timer) e.getSource()).stop();
+                    startTimeBeforeAnimation = System.currentTimeMillis();
                     animateAnt();
                 } else {
 
@@ -456,7 +498,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
                 Timer timer = new Timer(delay, new ActionListener() {
                     int i;
-
+                    
                     @Override
                     public void actionPerformed(ActionEvent e) {
 
@@ -488,6 +530,8 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                             repaint();
                         } else {
                             ((Timer) e.getSource()).stop();
+                            startMovingAnt = false;
+                            antReached = true;
                         }
 
                     }
@@ -530,7 +574,60 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
             g.drawString("No Path Found", 300, 300);
         }
 
+        // Draw the elapsed time
+        
+        
+        
+        g.setColor(Color.RED); // Sets the color to red.
+        g.drawString("Mage Create: "+elapsedTimeStringBeforeSearch, timerX, timerY);
+        g.drawString("Solved Time: "+elapsedTimeStringAfterAnimation, timerX, timerY + 20);
+
+
     } // end paintComponent
+
+    private void setTimerMageCreation() {
+        int delay = 50; 
+        Timer timer = new Timer(delay, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                elapsedTimeAfterSearch = System.currentTimeMillis() - startTimeBeforeSearch;
+                long minutes = (elapsedTimeAfterSearch / 1000) / 60;
+                long seconds = (elapsedTimeAfterSearch / 1000) % 60;
+                long milliseconds = elapsedTimeAfterSearch % 1000;
+
+                elapsedTimeStringBeforeSearch = String.format("%d:%02d:%03d", minutes, seconds, milliseconds);
+                repaint();
+
+                if(startClicked){
+                    ((Timer) e.getSource()).stop();
+                }
+            }
+        });
+        timer.start();
+    }
+
+        private void setTimerSolving() {
+        int delay = 50; 
+        Timer timer = new Timer(delay, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(startClicked){
+                    elapsedTimeAfterAnimation = System.currentTimeMillis() - startTimeBeforeAnimation;
+                    long minutes = (elapsedTimeAfterAnimation / 1000) / 60;
+                    long seconds = (elapsedTimeAfterAnimation / 1000) % 60;
+                    long milliseconds = elapsedTimeAfterAnimation % 1000;
+
+                    elapsedTimeStringAfterAnimation = String.format("%d:%02d:%03d", minutes, seconds, milliseconds);
+                    repaint();
+                }
+                
+                if(antReached){
+                    ((Timer) e.getSource()).stop();
+                }
+            }
+        });
+        timer.start();
+    }
 
     public void drawPath(Graphics g, int tileSize, LinkedList<Tile> LinkedList) {
 

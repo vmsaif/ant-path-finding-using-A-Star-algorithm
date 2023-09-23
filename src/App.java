@@ -8,11 +8,15 @@ import javax.swing.JFrame;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        Game game = new Game();
+        
         JFrame frame = new JFrame("Ant Path Finding with A* Algorithm");
+        frame.setSize(1400, 900);
+
+        Game game = new Game(frame);
+        
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(900, 700);
         frame.add(game);
+        
         frame.setVisible(true);
     }
 }
