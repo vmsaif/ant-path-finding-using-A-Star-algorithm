@@ -4,17 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [v1.1.0] - 2023-09-22
-
 ### Added
 
 - Added mouse drag support to change the tile type.
 - Icons for each tile type.
+- Added Mage creation timer.
+- Added Mage solving by Ai timer. Meaning how long it takes for the Ai to reach the goal graphically.
+- Added counter for each tile type.
 
 ### Changed 
 
 - Button placement from right column to top row.
-
 
 ### removed
 

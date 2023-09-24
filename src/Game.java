@@ -499,7 +499,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     // animate the ant from start to goal
     public void animateAnt() {
         if (startMovingAnt) {
-            double speed = 3.0;
+            
             int delay = 10; // 0.1 second delay
             LinkedList<Tile> path = ant.getPath();
 
@@ -519,6 +519,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
                 Timer timer = new Timer(delay, new ActionListener() {
                     int i;
+                    double speed;
                     
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -528,6 +529,9 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                             i = path.size() - 1;
 
                             Tile nextTile = path.get(i);
+
+                            speed = setSpeed(nextTile);
+                            
 
                             double dx = nextTile.getXpixel() - ant.getX();
                             double dy = nextTile.getYpixel() - ant.getY();
@@ -541,6 +545,8 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
                             // if the ant is close to the next tile, remove the tile from the path
                             if (distance < speed) {
+                                ant.setX(nextTile.getXpixel());
+                                ant.setY(nextTile.getYpixel());
                                 path.remove(i);
 
                                 // if the ant reached the goal, stop the timer
@@ -561,19 +567,29 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                         }
 
                     }
+
+                    private double setSpeed(Tile nextTile) {
+                        double output = Tile.COST_SWAMPLAND; // highest cost 4 for open terrain
+
+                        if(nextTile.isSwampland()){
+                            output = (output/Tile.COST_SWAMPLAND) + 0.25; // 1.25
+                        } else if(nextTile.isGrassland()){
+                            output = output*2/Tile.COST_GRASSLAND + 0.5; // 3.16
+                        }
+
+                        return output;
+                    }
                 });
                 timer.start();
             }
         }
     }
-
+   
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         printBoardAndCount(g);
-
-        
 
         // draw ant
         if (ant != null) {
@@ -590,7 +606,6 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
             g.drawString("No Path Found", 300, 300);
         }
 
-        
         // Draw the elapsed time
         g.setColor(Color.RED); // Sets the color to red.
         g.setFont(new Font("Courier New", Font.PLAIN, 20)); 
@@ -636,8 +651,6 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         openTerrainCount = openTerrain;
     }
 
-
-
     private void setTimerMageCreation() {
         int delay = 50; 
         Timer timer = new Timer(delay, new ActionListener() {
@@ -662,7 +675,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         timer.start();
     }
 
-        private void setTimerSolving() {
+    private void setTimerSolving() {
         int delay = 50; 
         Timer timer = new Timer(delay, new ActionListener() {
             @Override
@@ -710,7 +723,5 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     public static int getTileSize() {
         return TILE_SIZE;
     }
-
-
 
 }// end class
