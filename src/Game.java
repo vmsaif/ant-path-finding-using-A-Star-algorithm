@@ -25,24 +25,26 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.GridLayout;
-
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-
+import java.io.IOException;
 import java.util.LinkedList;
 import javax.swing.Timer;
-
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
+    private JFrame frame;
     private final static int TILE_SIZE = 40;
     private final int NUM_ROWS = 16;
     private final int NUM_COLS = 16;
@@ -50,7 +52,6 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     private int swamplandCount;
     private int grasslandCount;
     private int openTerrainCount;
-
 
     private Ant ant;
     private Tile[][] tiles;
@@ -88,8 +89,15 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     private boolean antReached;
     protected boolean startTimer;
 
-    public Game(JFrame frame) {
+    // images 
+    private static Image antImage;
+    private static Image foodImg;
+    private static Image grasslandImg;
+    private static Image swamplandImg;
+    private static Image obstacleImg;
 
+    public Game(JFrame frame) {
+        this.frame = frame;
         buttonCount = 8; // number of buttons
         // Set the layout manager to a BorderLayout
         setLayout(new BorderLayout());
@@ -105,6 +113,10 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         Tile.setxOffset(xOffset);
         Tile.setyOffset(yOffset);
 
+        //load all images
+        loadImg();
+
+        // create board
         createTiles();
         addMouseListener(this);
         addMouseMotionListener(this);
@@ -150,6 +162,18 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         
         setTimerMageCreation();
         setTimerSolving();
+    }
+
+    private void loadImg() {
+        try {
+            obstacleImg = ImageIO.read(getClass().getResource("/assets/images/obstacle.png"));
+            swamplandImg = ImageIO.read(getClass().getResource("/assets/images/swampland.png"));
+            grasslandImg = ImageIO.read(getClass().getResource("/assets/images/grassland.png"));
+            foodImg = ImageIO.read(getClass().getResource("/assets/images/food.png"));
+            antImage = ImageIO.read(getClass().getResource("/assets/images/ant.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void resetButton() {
@@ -617,13 +641,9 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         // draw path
         drawPath(g, TILE_SIZE, tobeDrawn);
 
-        if(noPath){
-            // write no path found on the screen at the center with increased font size
-            g.setFont(g.getFont().deriveFont(50f));
-            g.setColor(Color.RED);
-            g.drawString("No Path Found", 300, 300);
-        }
+        printIfNoPath(g);
 
+        
         // Draw the elapsed time
         g.setColor(Color.RED); // Sets the color to red.
         g.setFont(new Font("Courier New", Font.PLAIN, 20)); 
@@ -640,6 +660,27 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
 
     } // end paintComponent
+
+    private void printIfNoPath(Graphics g) {
+        if(noPath){
+            // write no path found on the screen at the center with increased font size
+            Font font = g.getFont().deriveFont(50f);
+            g.setFont(font);
+            g.setColor(Color.RED);
+            
+            // Calculate the size of the string
+            FontMetrics metrics = g.getFontMetrics(font);
+            int stringWidth = metrics.stringWidth("No Path Found");
+            int stringHeight = metrics.getAscent() - metrics.getDescent();
+        
+            // Calculate x and y for the string to be centered
+            int x = (frame.getWidth() - stringWidth) / 2;
+            int y = (frame.getHeight() - 75 + stringHeight) / 2;
+        
+            g.drawString("No Path Found", x, y);
+        }
+        
+    }
 
     private void printBoardAndCount(Graphics g) {
         // draw tiles and add counter for each terrain
@@ -683,7 +724,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                     elapsedTimeStringBeforeSearch = String.format("%d:%02d:%03d", minutes, seconds, milliseconds);
                     repaint();
 
-                    if(startClicked){
+                    if(startClicked || noPath){
                         ((Timer) e.getSource()).stop();
                     }
                 }
@@ -708,7 +749,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                     repaint();
                 }
                 
-                if(antReached){
+                if(antReached || noPath){
                     ((Timer) e.getSource()).stop();
                 }
             }
@@ -741,5 +782,27 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     public static int getTileSize() {
         return TILE_SIZE;
     }
+
+    public static Image getObstacleImg() {
+        return obstacleImg;
+    }
+
+    public static Image getSwamplandImg() {
+        return swamplandImg;
+    }
+
+    public static Image getGrasslandImg() {
+        return grasslandImg;
+    }
+
+    public static Image getFoodImg() {
+        return foodImg;
+    }
+
+    public static Image getAntImg() {
+        return antImage;
+    }
+
+
 
 }// end class

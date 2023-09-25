@@ -34,22 +34,21 @@ public class Tile implements Comparable<Tile> {
     private Tile cameFrom;
     private boolean removeAntImg;
     private static Color boardDefaultColor = Color.WHITE;
-    private Image antImage;
-    private Image foodImg;
-    private Image grasslandImg;
-    private Image swamplandImg;
-    private Image obstacleImg;
 
     public Tile(int x, int y) {
         this.x = x;
         this.y = y;
-        
+
         this.cost = COST_OPEN_TERRAIN;
         isOpenTerrain = true;
         this.cameFrom = null;
     }
 
     public void draw(Graphics g) {
+
+        g.setColor(boardDefaultColor);
+        g.fillRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize()); // draw the tile background
+
         if (isObstacle) {
             drawObstacleImage(g);
         } else if (isStart) {
@@ -57,10 +56,10 @@ public class Tile implements Comparable<Tile> {
                 g.setColor(Color.LIGHT_GRAY);
                 g.fillRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
             } else {
-                drawAntImage(g);
+                drawAntImg(g);
             }
         } else if (isGoal) {
-            drawFoodImage(g);
+            drawFoodImg(g);
         } else if (isGrassland) {
             drawGrassland(g);
         } else if (isSwampland) {
@@ -71,78 +70,48 @@ public class Tile implements Comparable<Tile> {
             g.fillRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
         }
 
-        // if((!isStart || removeAntImg) && !isGoal){
-            
-        // }
-        
         g.setColor(Color.BLACK);
         g.drawRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
 
     }
 
     private void drawObstacleImage(Graphics g) {
-        try {
-            if(obstacleImg == null){
-                obstacleImg = ImageIO.read(getClass().getResource("/assets/images/obstacle.png"));
-            }
-            g.setColor(boardDefaultColor);
-            g.fillRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
-            g.drawImage(obstacleImg, getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize(), null);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (Game.getObstacleImg() != null) {
+            g.drawImage(Game.getObstacleImg(), getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize(), null);
+        } else {
+            System.out.println("Obstacle image is null");
         }
     }
 
     private void drawSwampland(Graphics g) {
-        try {
-            if(swamplandImg == null){
-                swamplandImg = ImageIO.read(getClass().getResource("/assets/images/swampland.png"));
-            }
-            g.setColor(boardDefaultColor);
-            g.fillRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
-            g.drawImage(swamplandImg, getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize(), null);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (Game.getSwamplandImg() != null) {
+            g.drawImage(Game.getSwamplandImg(), getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize(), null);
+        } else {
+            System.out.println("Swampland image is null");
         }
     }
 
     private void drawGrassland(Graphics g) {
-        try {
-            if(grasslandImg == null){
-                grasslandImg = ImageIO.read(getClass().getResource("/assets/images/grassland.png"));
-            }
-            g.setColor(boardDefaultColor);
-            g.fillRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
-            g.drawImage(grasslandImg, getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize(), null);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private void drawFoodImage(Graphics g) {
-        try {
-            if(foodImg == null){
-                foodImg = ImageIO.read(getClass().getResource("/assets/images/food.png"));
-            }
-            g.setColor(boardDefaultColor);
-            g.fillRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
-            g.drawImage(foodImg, getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize(), null);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (Game.getGrasslandImg() != null) {
+            g.drawImage(Game.getGrasslandImg(), getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize(), null);
+        } else {
+            System.out.println("Grassland image is null");
         }
     }
 
-    private void drawAntImage(Graphics g) {
-        try {
-            if(antImage == null){
-                antImage = ImageIO.read(getClass().getResource("/assets/images/ant.png"));
-            }
-            g.setColor(boardDefaultColor);
-            g.fillRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
-            g.drawImage(antImage, getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize(), null);
-        } catch (IOException e) {
-            e.printStackTrace();
+    private void drawFoodImg(Graphics g) {
+        if (Game.getFoodImg() != null) {
+            g.drawImage(Game.getFoodImg(), getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize(), null);
+        } else {
+            System.out.println("Food image is null");
+        }
+    }
+
+    private void drawAntImg(Graphics g) {
+        if (Game.getAntImg() != null) {
+            g.drawImage(Game.getAntImg(), getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize(), null);
+        } else {
+            System.out.println("Ant image is null");
         }
     }
 

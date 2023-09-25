@@ -29,8 +29,6 @@ public class AStarSearch extends JPanel {
         // add start to openSet
         openSet.add(start);
 
-        
-
         boolean foundGoal = false;
         boolean noPath = false;
 
@@ -114,8 +112,6 @@ public class AStarSearch extends JPanel {
             }
 
         } // end main while loop
-
-
 
         // the list of all paths for drawing purposes
         ant.setAllPath2D(allPath2D);
