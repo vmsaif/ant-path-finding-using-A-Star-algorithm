@@ -132,9 +132,6 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         searchButton(); // returning the button to enable the button after search
         resetButton(); // it will enable the search button after reseting the game
 
-        // load food image
-        // loadFoodImg();
-
         // Add the button panel
         add(buttonPanel, BorderLayout.NORTH);
         setPreferredSize(new Dimension(getPreferredSize().width + 200, getPreferredSize().height));
@@ -383,7 +380,6 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         grasslandCount = 0;
         openTerrainCount = 0;
 
-
         // Set the clicked tile as the start location
         clickedTile.setStart();
         startTile = clickedTile;
@@ -557,8 +553,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                 ant.setX(path.get(path.size() - 1).getXpixel());
                 ant.setY(path.get(path.size() - 1).getYpixel());
 
-                
-
+                // start the timer
                 Timer timer = new Timer(delay, new ActionListener() {
                     int i;
                     double speed;
@@ -614,9 +609,9 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                         double output = Tile.COST_SWAMPLAND; // highest cost 4 for open terrain
 
                         if(nextTile.isSwampland()){
-                            output = (output/Tile.COST_SWAMPLAND) + 0.25; // 1.25
+                            output = (output/Tile.COST_SWAMPLAND) + 0.5; // 1.25
                         } else if(nextTile.isGrassland()){
-                            output = output*2/Tile.COST_GRASSLAND + 0.5; // 3.16
+                            output = output*2/Tile.COST_GRASSLAND + 0.5; // 2.5
                         }
 
                         return output;
@@ -643,20 +638,21 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
         printIfNoPath(g);
 
-        
         // Draw the elapsed time
         g.setColor(Color.RED); // Sets the color to red.
         g.setFont(new Font("Courier New", Font.PLAIN, 20)); 
-        g.drawString("Mage Create: "+elapsedTimeStringBeforeSearch, timerX, timerY);
-        g.drawString("Solved Time: "+elapsedTimeStringAfterAnimation, timerX, timerY + 20);
+        g.drawString("Mage Create: " + elapsedTimeStringBeforeSearch, timerX, timerY);
+        g.drawString("Solved Time: " + elapsedTimeStringAfterAnimation, timerX, timerY + 20);
 
         // draw the counts of each terrain
         g.setColor(Color.BLACK);
         g.setFont(new Font("Courier New", Font.PLAIN, 20));
-        g.drawString("Obstacle: "+obstacleCount, terrainCountX, terrainCountY);
-        g.drawString("Swampland: "+swamplandCount, terrainCountX, terrainCountY + 20);
-        g.drawString("Grassland: "+grasslandCount, terrainCountX, terrainCountY + 40);
-        g.drawString("Open Terrain: "+openTerrainCount, terrainCountX, terrainCountY + 60);
+        g.drawString("Grid Settings: " + NUM_ROWS + " x " + NUM_COLS, terrainCountX, terrainCountY-20);
+        g.drawString("Open Terrain: " + openTerrainCount, terrainCountX, terrainCountY + 0);
+        g.drawString("Obstacle: "+ obstacleCount, terrainCountX, terrainCountY + 20);
+        g.drawString("Swampland: " + swamplandCount, terrainCountX, terrainCountY + 40);
+        g.drawString("Grassland: " + grasslandCount, terrainCountX, terrainCountY + 60);
+
 
 
     } // end paintComponent
@@ -704,6 +700,15 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                 }
             }
         }
+
+        if(startTile != null){
+            openTerrain--;
+        }
+
+        if(goalTile != null){
+            openTerrain--;
+        }
+
         obstacleCount = obstacle;
         swamplandCount = swampland;
         grasslandCount = grassland;

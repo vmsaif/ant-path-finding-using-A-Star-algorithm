@@ -176,8 +176,7 @@ public class AStarSearch extends JPanel {
         LinkedList<Tile> path = new LinkedList<>();
         while (current != null) {
             path.add(current);
-            System.out.println(current);
-
+            
             // move to the previous node
             current = current.getCameFrom();
         }

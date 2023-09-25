@@ -5,10 +5,6 @@
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Image;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 public class Tile implements Comparable<Tile> {
     public static final double COST_OPEN_TERRAIN = 1;

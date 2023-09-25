@@ -6,15 +6,22 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-- Added mouse drag support to change the tile type.
-- Icons for each tile type.
-- Added Mage creation timer.
-- Added Mage solving by Ai timer. Meaning how long it takes for the Ai to reach the goal graphically.
-- Added counter for each tile type.
+- Mouse drag support for tile type changes.
+- Unique icons for each tile type.
+- Counter for each tile type. (Shows the number of tiles of each type)
+- Timer 1 - Time took for the user to create mage.
+- Timer 2 - Time took for the AI to solve the Mage solution (duration for AI to **graphically** reach the goal).
 
-### Changed 
+### Changed
 
+- "No Path Found" message now centrally aligned on screen.
+- Optimized initial rendering speed for the ant image.
 - Button placement from right column to top row.
+- Adjusted ant's speed consistency across different tile type.
+
+### Fixed
+
+- Crash issue when "Search" button is clicked a second time without resetting.
 
 ### removed
 
