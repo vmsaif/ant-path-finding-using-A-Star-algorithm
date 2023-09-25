@@ -152,8 +152,6 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         setTimerSolving();
     }
 
-
-
     private void resetButton() {
         JButton result = new JButton("Reset");
         result.addActionListener(new ActionListener() {
@@ -184,7 +182,6 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                 setTimerMageCreation();
                 setTimerSolving();
                 repaint();
-
             }
         });
         buttonPanel.add(result);
@@ -257,23 +254,31 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                 if (startTile == null) {
                     System.out.println("Please select start location");
                 }
+
                 if (goalTile == null) {
                     System.out.println("Please select goal location");
                 }
 
                 if (startTile != null && goalTile != null) {
+                    resetCameFrom(tiles); // useful if the user wants to search for the second time or more
                     ant = new Ant(startTile, goalTile, TILE_SIZE, tiles);
                     startClicked = true;
                     startTimeBeforeAnimation = System.currentTimeMillis();
                     ant.search();
                     delayPaint();
                 }
-                
-
             }
         });
         buttonPanel.add(result);
         return result;
+    }
+
+    private void resetCameFrom(Tile[][] tiles) {
+        for (int i = 0; i < tiles.length; i++) {
+            for (int j = 0; j < tiles[i].length; j++) {
+                tiles[i][j].resetCameFrom();
+            }
+        }
     }
 
     private void selectGoalLocation() {
@@ -342,6 +347,19 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         if(startTile != null){
             startTile.resetStart();
         }
+
+        startClicked = false;
+        startMovingAnt = false;
+        noPath = false;
+        ant = null;
+        tobeDrawn = new LinkedList<Tile>();
+
+        obstacleCount = 0;
+        swamplandCount = 0;
+        grasslandCount = 0;
+        openTerrainCount = 0;
+
+
         // Set the clicked tile as the start location
         clickedTile.setStart();
         startTile = clickedTile;

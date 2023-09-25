@@ -9,17 +9,17 @@ public class AStarSearch extends JPanel {
     private Tile start;
     private Tile goal;
     private Ant ant;
-    private LinkedList<LinkedList<Tile>> allPath2D = new LinkedList<LinkedList<Tile>>();
+    private LinkedList<LinkedList<Tile>> allPath2D;
 
     public AStarSearch(Tile[][] tiles, Ant ant, Tile start, Tile goal) {
         this.tiles = tiles;
         this.start = start;
         this.goal = goal;
         this.ant = ant;
+        allPath2D = new LinkedList<LinkedList<Tile>>();
     }
 
     public LinkedList<Tile> search() {
-
         LinkedList<Tile> output = new LinkedList<>();
         LinkedList<Tile> closedSet = new LinkedList<>();
 
@@ -28,6 +28,8 @@ public class AStarSearch extends JPanel {
 
         // add start to openSet
         openSet.add(start);
+
+        
 
         boolean foundGoal = false;
         boolean noPath = false;
@@ -106,7 +108,7 @@ public class AStarSearch extends JPanel {
             } // end else(not goal)
 
             // if openSet is empty, then no path
-            if (openSet.size() == 0) {
+            if (openSet.size() == 0 && foundGoal == false) {
                 System.out.println("No path found");
                 noPath = true;
             }
@@ -178,6 +180,7 @@ public class AStarSearch extends JPanel {
         LinkedList<Tile> path = new LinkedList<>();
         while (current != null) {
             path.add(current);
+            System.out.println(current);
 
             // move to the previous node
             current = current.getCameFrom();

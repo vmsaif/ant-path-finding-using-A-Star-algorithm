@@ -292,6 +292,10 @@ public class Tile implements Comparable<Tile> {
         cameFrom = current;
     }
 
+    public void resetCameFrom() {
+        cameFrom = null;
+    }
+
     public Tile getCameFrom() {
         return cameFrom;
     }
