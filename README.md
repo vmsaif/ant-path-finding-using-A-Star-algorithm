@@ -190,5 +190,5 @@ In all cases, once the commands are followed, the Java application packaged insi
 3. Enter your password when prompted.
 
 ## Team
-- Tahsin Ridwan Pulok (@tahsinpulok)[https://github.com/tahsinpulok] - collaboration, providing assets and new feature/UI ideas.
-- Saif Mahmud (@vmsaif)[https://github.com/vmsaif]
+- Tahsin Ridwan Pulok [@tahsinpulok](https://github.com/tahsinpulok) - collaboration, providing assets and new feature/UI ideas.
+- Saif Mahmud [@vmsaif](https://github.com/vmsaif) - programming and documentation.
