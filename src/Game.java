@@ -125,9 +125,9 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         counterDigitColor = new Color(255, 0, 0, (int) (1.0 * 255));
 
         footerColor = new Color(0, 0, 255, (int) (0.1 * 255)); 
-        timerFontColor = new Color(255, 0, 155, (int) (1.0 * 255)); 
+        timerFontColor = new Color(0, 0, 0, (int) (1.0 * 255)); 
 
-        timerFont = new Font("Courier New", Font.PLAIN, 20);
+        timerFont = new Font("Arial", Font.BOLD, 18);
         buttonFont = new Font("Arial", Font.PLAIN, 12);
         
         // -------------------------
