@@ -52,8 +52,8 @@ jobs:
     - name: Upload JAR as Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ env.FILE_NAME }}-${{ env.VERSION }}.jar
-        path: ${{ env.OUT_DIR }}/${{ env.FILE_NAME }}-${{ env.VERSION }}.jar
+        name: ${{ env.FILE_NAME }}-${{ steps.get_stripped_version.outputs.version }}.jar
+        path: ${{ env.OUT_DIR }}/${{ env.FILE_NAME }}-${{ steps.get_stripped_version.outputs.version }}.jar
 
     - name: Create GitHub Release
       id: create_release
@@ -71,8 +71,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}  
-        asset_path: ${{ env.OUT_DIR }}/${{ env.FILE_NAME }}-${{ env.VERSION }}.jar
-        asset_name: ${{ env.FILE_NAME }}-${{ env.VERSION }}.jar
+        asset_path: ${{ env.OUT_DIR }}/${{ env.FILE_NAME }}-${{ steps.get_stripped_version.outputs.version }}.jar
+        asset_name: ${{ env.FILE_NAME }}-${{ steps.get_stripped_version.outputs.version }}.jar
         asset_content_type: application/java-archive  
   
 
@@ -93,14 +93,14 @@ jobs:
     - name: Download JAR from artifact
       uses: actions/download-artifact@v3
       with:
-        name: ${{ env.FILE_NAME }}-${{ env.VERSION }}.jar
+        name: ${{ env.FILE_NAME }}-${{ needs.build.outputs.stripped_version }}.jar
         path: ${{ env.OUT_DIR }}
     
     - name: Create Standalone for MacOS
       run: |
         jpackage --input ${{ env.OUT_DIR }} \
                   --name ${{ env.FILE_NAME }} \
-                  --main-jar ${{ env.FILE_NAME }}-${{ env.VERSION }}.jar \
+                  --main-jar ${{ env.FILE_NAME }}-${{ needs.build.outputs.stripped_version }}.jar \
                   --main-class ${{ env.MAIN_CLASS }} \
                   --icon assets/icon/${{ env.ICON_NAME }}.icns \
                   --app-version ${{ needs.build.outputs.stripped_version }} \
@@ -139,14 +139,14 @@ jobs:
     - name: Download JAR from artifact
       uses: actions/download-artifact@v3
       with:
-        name: ${{ env.FILE_NAME }}-${{ env.VERSION }}
+        name: ${{ env.FILE_NAME }}-${{ needs.build.outputs.stripped_version }}
         path: ${{ env.OUT_DIR }}
 
     - name: Create Standalone for Ubuntu
       run: |
         jpackage --input ${{ env.OUT_DIR }} \
                   --name ${{ env.FILE_NAME }} \
-                  --main-jar ${{ env.FILE_NAME }}-${{ env.VERSION }}.jar \
+                  --main-jar ${{ env.FILE_NAME }}-${{ needs.build.outputs.stripped_version }}.jar \
                   --main-class ${{ env.MAIN_CLASS }} \
                   --resource-dir assets \
                   --icon assets/icon/${{ env.ICON_NAME }}.png \
@@ -165,7 +165,7 @@ jobs:
       with:
         upload_url: ${{ needs.build.outputs.release_upload_url }}
         asset_path: ./${{ env.FILE_NAME }}_${{ needs.build.outputs.stripped_version }}-1_amd64.deb
-        asset_name: ${{ env.FILE_NAME }}-${{ env.VERSION }}-linux_amd64.deb
+        asset_name: ${{ env.FILE_NAME }}-${{ needs.build.outputs.stripped_version }}-linux_amd64.deb
         asset_content_type: application/octet-stream
 
   windows_build:
@@ -179,7 +179,7 @@ jobs:
     - name: Download JAR from artifact
       uses: actions/download-artifact@v3
       with:
-        name: ${{ env.FILE_NAME }}-${{ env.VERSION }}
+        name: ${{ env.FILE_NAME }}-${{ needs.build.outputs.stripped_version }}
         path: ${{ env.OUT_DIR }}
 
     - name: Setup Java 17
@@ -193,7 +193,7 @@ jobs:
         jpackage --input ${{ env.OUT_DIR }} `
                 --verbose `
                 --name ${{ env.FILE_NAME }} `
-                --main-jar ${{ env.FILE_NAME }}-${{ env.VERSION }}.jar `
+                --main-jar ${{ env.FILE_NAME }}-${{ needs.build.outputs.stripped_version }}.jar `
                 --main-class ${{ env.MAIN_CLASS }} `
                 --icon assets/icon/${{ env.ICON_NAME }}.ico `
                 --win-shortcut `
