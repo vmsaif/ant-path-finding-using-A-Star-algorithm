@@ -89,6 +89,12 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     private boolean antReached;
     protected boolean startTimer;
 
+    int iconSize; // Define the size of your icons
+    int iconTextSpacing; // Spacing between icon and text
+    int wordSpacing; // Spacing between each icon-count pair
+    double iconScaling;
+    
+
     // images 
     private static Image antImage;
     private static Image foodImg;
@@ -108,7 +114,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
         // set tile offset
         int xOffset = (int) ((frame.getWidth() - TILE_SIZE * NUM_COLS) / 2);
-        int yOffset = (int) ((frame.getHeight() - TILE_SIZE * NUM_ROWS) / 2.5);
+        int yOffset = (int) ((frame.getHeight() - TILE_SIZE * NUM_ROWS) / 1.8);
 
         Tile.setxOffset(xOffset);
         Tile.setyOffset(yOffset);
@@ -136,6 +142,14 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         add(buttonPanel, BorderLayout.NORTH);
         setPreferredSize(new Dimension(getPreferredSize().width + 200, getPreferredSize().height));
 
+        iconSize = 20; // Define the size of your icons
+        iconTextSpacing = 5; // Spacing between icon and text
+        wordSpacing = 25; // Spacing between each icon-count pair
+
+        terrainCountX = (int)(frame.getWidth()/2.4);
+        terrainCountY = frame.getHeight()/15;
+        iconScaling = 2.5;
+    
         startTimer = false;
         startClicked = false;
         startTile = null;
@@ -154,9 +168,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         timerX = 100;
         timerY = frame.getHeight() - 100;
 
-        terrainCountX = frame.getWidth() - 300;
-        terrainCountY = frame.getHeight() - 150;
-        
+       
         setTimerMageCreation();
         setTimerSolving();
     }
@@ -639,23 +651,55 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         printIfNoPath(g);
 
         // Draw the elapsed time
-        g.setColor(Color.RED); // Sets the color to red.
-        g.setFont(new Font("Courier New", Font.PLAIN, 20)); 
-        g.drawString("Mage Create: " + elapsedTimeStringBeforeSearch, timerX, timerY);
-        g.drawString("Solved Time: " + elapsedTimeStringAfterAnimation, timerX, timerY + 20);
 
-        // draw the counts of each terrain
-        g.setColor(Color.BLACK);
-        g.setFont(new Font("Courier New", Font.PLAIN, 20));
-        g.drawString("Grid Settings: " + NUM_ROWS + " x " + NUM_COLS, terrainCountX, terrainCountY-20);
-        g.drawString("Open Terrain: " + openTerrainCount, terrainCountX, terrainCountY + 0);
-        g.drawString("Obstacle: "+ obstacleCount, terrainCountX, terrainCountY + 20);
-        g.drawString("Swampland: " + swamplandCount, terrainCountX, terrainCountY + 40);
-        g.drawString("Grassland: " + grasslandCount, terrainCountX, terrainCountY + 60);
+        printTimer(g);
 
+        drawTileCount(g);
 
 
     } // end paintComponent
+
+    private void drawTileCount(Graphics g) {
+        
+        // Draw the icons with their counts
+        try {
+            g.drawImage(obstacleImg, terrainCountX, terrainCountY, iconSize, iconSize, null);
+            g.drawString("" + obstacleCount, terrainCountX + iconSize + iconTextSpacing, terrainCountY + iconSize-3);
+
+            g.drawImage(grasslandImg, terrainCountX + wordSpacing*3, terrainCountY, iconSize, iconSize, null);
+            g.drawString("" + grasslandCount, terrainCountX + wordSpacing*3 + iconSize + iconTextSpacing, terrainCountY + iconSize-3);
+
+            g.drawImage(swamplandImg, terrainCountX + wordSpacing*6, terrainCountY, iconSize, iconSize, null);
+            g.drawString("" + swamplandCount, terrainCountX + wordSpacing*6 + iconSize + iconTextSpacing, terrainCountY + iconSize-3);
+
+            //open terrain
+            g.setColor(Color.WHITE);
+            g.fillRect(terrainCountX + (int)(wordSpacing*8.5)+ iconSize, terrainCountY+3, (int) (Game.getTileSize()/iconScaling), (int) (Game.getTileSize()/iconScaling));
+            g.setColor(Color.BLACK);
+            g.drawRect(terrainCountX + (int)(wordSpacing*8.5) + iconSize, terrainCountY+3, (int) (Game.getTileSize()/iconScaling), (int) (Game.getTileSize()/iconScaling));
+            g.setColor(Color.RED);
+            g.drawString("" + openTerrainCount, terrainCountX + (int)(wordSpacing*9.25) + iconSize + iconTextSpacing, terrainCountY + iconSize-2);
+
+        } catch (NullPointerException e) {
+            System.out.println("Image not found");
+        }
+    }
+
+    private void printTimer(Graphics g) {
+        // draw a footer for the timer
+        g.setColor(Color.WHITE);
+        g.fillRect(0, frame.getHeight() - 70, frame.getWidth(), 100);
+
+        timerX = frame.getWidth() - 620;
+        timerY = frame.getHeight() - 47;
+        g.setColor(Color.RED); // Sets the color to red.
+        g.setFont(new Font("Courier New", Font.PLAIN, 20)); 
+        g.drawString("Creation Time: " + elapsedTimeStringBeforeSearch, timerX, timerY);
+        g.setColor(Color.BLACK);
+        g.drawString("|", timerX + 283, timerY);
+        g.setColor(Color.RED);
+        g.drawString("AI Solving Time: " + elapsedTimeStringAfterAnimation, timerX + 300, timerY);
+    }
 
     private void printIfNoPath(Graphics g) {
         if(noPath){

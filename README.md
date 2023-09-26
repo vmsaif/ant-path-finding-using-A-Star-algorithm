@@ -2,6 +2,20 @@
 
 [![Hits](https://hits.sh/github.com/vmsaif/ant-path-finding-using-A-Star-algorithm.svg?label=Visits&color=100b75)](https://hits.sh/github.com/vmsaif/ant-path-finding-using-A-Star-algorithm/)
 
+# About the Game
+
+Dive into a world where you're not just a player, but a creator. In this interactive game, **you** design the maze, but here's the twist: Can you design a maze swiftly, using the least time possible, yet make our AI take the maximum time to find its way? The challenge? Make the AI ponder over your crafty creation. While our AI boasts of solving most mazes in a mere moment, we've added a graphic representation of the ant's journey to allow you to savor the AI's decision-making, one step at a time. The stakes? Your creativity versus AI's intelligence. Don your creator's cap, and let the games begin!
+
+## Your Journey as a Creator
+
+At the start of the game, you're presented with a blank canvas. Here, you get to wear the hat of a creator:
+
+1. **Designate Start and Finish:** Decide where the ant starts its journey and where its food (goal) lies.
+2. **Craft the Terrain:** Mold the landscape by placing obstacles, open terrains, grasslands, or swamplands. Each terrain type presents a unique challenge to the AI. Grasslands make the ant take longer to cross than open terrains, and swamplands prolong its journey even more. Obstacles? They're the ultimate roadblock, making paths impassable.
+3. **The Ant's Quest:** Once you've crafted your masterpiece, sit back and watch the ant embark on its quest to find the goal. Behind the scenes is the formidable A* algorithm, aided by the Manhattan distance heuristic function. But you don't need to dive into these complexities; your main course is the visual spectacle of the ant navigating its way through the challenges you've set.
+
+Note: You can even make it further challenging by limiting the count of each terrain type. For example, you can limit yourself from using the number of obstacles, grasslandsand, swamplands you can use. This will make the mage creation more challenging.
+
 ## Logic and Design of Program
 
 The program uses the A* algorithm to find the shortest path from the ant to the food. The ant is the start and the food is the goal. The ant can move in 8 directions. 
@@ -10,7 +24,7 @@ When the game starts, the user is asked to select:
 - The start and the goal cells.
 - The obstacle cells.
 - The nature of the terrain for each cell between:
-    - Open Terrain	
+    - Open Terrain
     - Grassland
     - Swampland
     - Obstacles
