@@ -9,6 +9,20 @@
             "name": "App",
             "request": "launch",
             "mainClass": "App",
+            "projectName": "ant-path-finding"
+        },
+        {
+            "type": "java",
+            "name": "App",
+            "request": "launch",
+            "mainClass": "main.java.App",
+            "projectName": "ant-path-finding-using-A-Star-algorithm_f97be32f"
+        },
+        {
+            "type": "java",
+            "name": "App",
+            "request": "launch",
+            "mainClass": "App",
             "vmArgs": "-Xmx2G",
             "projectName": "ant-path-finding-using-A-Star-algorithm_635c1bc2"
         },

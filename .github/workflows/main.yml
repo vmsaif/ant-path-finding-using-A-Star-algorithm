@@ -10,7 +10,7 @@ env:
   FILE_NAME: ant-path-finding # Name of the JAR file (All lowercase, no spaces, no underscores)
   ICON_NAME: antPathFinding-512
   MAIN_CLASS: App
-  OUT_DIR: out
+  OUT_DIR: target
   VERSION: ${{ github.ref_name }}
 
 jobs:
@@ -21,6 +21,12 @@ jobs:
       stripped_version: ${{ steps.get_stripped_version.outputs.version }}
 
     steps:
+    - name: Setup Java
+      uses: actions/setup-java@v2
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
     - name: Get stripped version
       id: get_stripped_version
       run: |
@@ -40,22 +46,13 @@ jobs:
         path: ./CHANGELOG.md
 
     - name: Compile and Build JAR
-      run: |
-        mkdir ${{ env.OUT_DIR }}
-        javac -d ${{ env.OUT_DIR }} -cp "lib/*" src/*.java
-        # Generate a temporary manifest file using echo
-        echo "Main-Class: ${{ env.MAIN_CLASS }}" > customManifest.txt
-        jar cvfm ${{ env.OUT_DIR }}/${{ env.FILE_NAME }}-${{ env.VERSION }}.jar \
-              customManifest.txt \
-              -C ${{ env.OUT_DIR }} ./ \
-              -C ./ assets/ \
-              -C lib .
+      run: mvn clean package
 
 
     - name: Upload JAR as Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ env.FILE_NAME }}-jar-${{ env.VERSION }}
+        name: ${{ env.FILE_NAME }}-${{ env.VERSION }}.jar
         path: ${{ env.OUT_DIR }}/${{ env.FILE_NAME }}-${{ env.VERSION }}.jar
 
     - name: Create GitHub Release
@@ -84,13 +81,19 @@ jobs:
     runs-on: macOS-latest
 
     steps:
+    - name: Setup Java
+      uses: actions/setup-java@v2
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
     - name: Checkout code
       uses: actions/checkout@v3
 
     - name: Download JAR from artifact
       uses: actions/download-artifact@v3
       with:
-        name: ${{ env.FILE_NAME }}-jar-${{ env.VERSION }}
+        name: ${{ env.FILE_NAME }}-${{ env.VERSION }}.jar
         path: ${{ env.OUT_DIR }}
     
     - name: Create Standalone for MacOS
@@ -109,9 +112,6 @@ jobs:
     - name: List contents of out directory
       run: ls ${{ env.OUT_DIR }}
 
-    # - name: Rename MacOS standalone
-    #   run: mv ${{ env.FILE_NAME }}-1.0.dmg ${{ env.FILE_NAME }}-MacOS-${{ env.VERSION }}.dmg
-
     - name: Attach MacOS Standalone to Release
       uses: actions/upload-release-asset@v1
       env:
@@ -127,13 +127,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Setup Java
+      uses: actions/setup-java@v2
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
     - name: Checkout code
       uses: actions/checkout@v3
 
     - name: Download JAR from artifact
       uses: actions/download-artifact@v3
       with:
-        name: ${{ env.FILE_NAME }}-jar-${{ env.VERSION }}
+        name: ${{ env.FILE_NAME }}-${{ env.VERSION }}
         path: ${{ env.OUT_DIR }}
 
     - name: Create Standalone for Ubuntu
@@ -151,9 +157,6 @@ jobs:
 
     - name: List contents of out directory
       run: ls -lh .
-
-    # - name: Rename Ubuntu standalone
-    #   run: mv ${{ env.FILE_NAME }}_1.0-1_amd64.deb ${{ env.FILE_NAME }}-Ubuntu-${{ env.VERSION }}_amd64.deb
 
     - name: Attach Ubuntu Standalone to Release
       uses: actions/upload-release-asset@v1
@@ -176,13 +179,13 @@ jobs:
     - name: Download JAR from artifact
       uses: actions/download-artifact@v3
       with:
-        name: ${{ env.FILE_NAME }}-jar-${{ env.VERSION }}
+        name: ${{ env.FILE_NAME }}-${{ env.VERSION }}
         path: ${{ env.OUT_DIR }}
 
-    - name: Setup Java 16
+    - name: Setup Java 17
       uses: actions/setup-java@v2
       with:
-        java-version: '16'
+        java-version: '17'
         distribution: 'temurin'
 
     - name: Create Standalone for Windows

@@ -76,11 +76,6 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     private boolean noPath;
     private Tile lastDraggedTile = null;
 
-    private int timerX;
-    private int timerY;
-    private int terrainCountX;
-    private int terrainCountY;
-
     private long startTimeBeforeSearch;
     private long elapsedTimeAfterSearch;
     private String elapsedTimeStringBeforeSearch;
@@ -181,11 +176,6 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
             public void componentResized(ComponentEvent e) {
 
                 // the top bar location
-                terrainCountX = (int)(frame.getWidth()/2.7);
-                terrainCountY = frame.getHeight()/15;
-                
-                timerX = frame.getWidth() - 480;
-                timerY = frame.getHeight() - 47;
 
                 // set the grid offset/start point
                 int xOffset = (int) ((frame.getWidth() - TILE_SIZE * NUM_COLS) / 2);
@@ -201,11 +191,11 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
     private void loadImg() {
         try {
-            obstacleImg = ImageIO.read(getClass().getResource("/assets/images/obstacle.png"));
-            swamplandImg = ImageIO.read(getClass().getResource("/assets/images/swampland.png"));
-            grasslandImg = ImageIO.read(getClass().getResource("/assets/images/grassland.png"));
-            foodImg = ImageIO.read(getClass().getResource("/assets/images/food.png"));
-            antImage = ImageIO.read(getClass().getResource("/assets/images/ant.png"));
+            obstacleImg = ImageIO.read(getClass().getResource("/images/obstacle.png"));
+            swamplandImg = ImageIO.read(getClass().getResource("/images/swampland.png"));
+            grasslandImg = ImageIO.read(getClass().getResource("/images/grassland.png"));
+            foodImg = ImageIO.read(getClass().getResource("/images/food.png"));
+            antImage = ImageIO.read(getClass().getResource("/images/ant.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -712,33 +702,33 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
             int totalWidth = totalIconWidth + 3 * iconTextSpacing; // The space after each icon for text
 
             // Calculate the starting X-coordinate to make the icons and text centered
-            int startX = (frame.getWidth() - totalWidth) / 2;
+            int terrainCountX = (frame.getWidth() - totalWidth) / 2;
 
-            terrainCountY = (int) (frame.getHeight() / 15);
+            int terrainCountY = (int) (frame.getHeight() / 15);
 
             g.setColor(counterDigitColor);
 
-            g.drawImage(obstacleImg, startX, terrainCountY, iconSize, iconSize, null);
-            g.drawString("" + obstacleCount, startX + iconSize + iconTextSpacing, terrainCountY + iconSize - 3);
+            g.drawImage(obstacleImg, terrainCountX, terrainCountY, iconSize, iconSize, null);
+            g.drawString("" + obstacleCount, terrainCountX + iconSize + iconTextSpacing, terrainCountY + iconSize - 3);
 
-            startX += iconSize + iconTextSpacing + wordSpacing;
+            terrainCountX += iconSize + iconTextSpacing + wordSpacing;
 
-            g.drawImage(grasslandImg, startX, terrainCountY, iconSize, iconSize, null);
-            g.drawString("" + grasslandCount, startX + iconSize + iconTextSpacing, terrainCountY + iconSize - 3);
+            g.drawImage(grasslandImg, terrainCountX, terrainCountY, iconSize, iconSize, null);
+            g.drawString("" + grasslandCount, terrainCountX + iconSize + iconTextSpacing, terrainCountY + iconSize - 3);
 
-            startX += iconSize + iconTextSpacing + wordSpacing;
+            terrainCountX += iconSize + iconTextSpacing + wordSpacing;
 
-            g.drawImage(swamplandImg, startX, terrainCountY, iconSize, iconSize, null);
-            g.drawString("" + swamplandCount, startX + iconSize + iconTextSpacing, terrainCountY + iconSize - 3);
+            g.drawImage(swamplandImg, terrainCountX, terrainCountY, iconSize, iconSize, null);
+            g.drawString("" + swamplandCount, terrainCountX + iconSize + iconTextSpacing, terrainCountY + iconSize - 3);
 
-            startX += iconSize + iconTextSpacing + wordSpacing;
+            terrainCountX += iconSize + iconTextSpacing + wordSpacing;
 
             g.setColor(openTerrainColor);
-            g.fillRect(startX, terrainCountY + 3, (int) (Game.getTileSize() / iconScaling), (int) (Game.getTileSize() / iconScaling));
+            g.fillRect(terrainCountX, terrainCountY + 3, (int) (Game.getTileSize() / iconScaling), (int) (Game.getTileSize() / iconScaling));
             g.setColor(openTerrainBoarderColor);
-            g.drawRect(startX, terrainCountY + 3, (int) (Game.getTileSize() / iconScaling), (int) (Game.getTileSize() / iconScaling));
+            g.drawRect(terrainCountX, terrainCountY + 3, (int) (Game.getTileSize() / iconScaling), (int) (Game.getTileSize() / iconScaling));
             g.setColor(counterDigitColor);
-            g.drawString("" + openTerrainCount, startX + iconSize + iconTextSpacing, terrainCountY + iconSize - 2);
+            g.drawString("" + openTerrainCount, terrainCountX + iconSize + iconTextSpacing, terrainCountY + iconSize - 2);
 
         } catch (NullPointerException e) {
             System.out.println("Image not found");
@@ -756,8 +746,8 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         String timerText = "Creation Time: " + elapsedTimeStringBeforeSearch + "   |   " + "AI Solving Time: " + elapsedTimeStringAfterAnimation;
         int stringWidth = g.getFontMetrics().stringWidth(timerText);
         int centeredX = (frame.getWidth() - stringWidth) / 2;
-
-        g.drawString(timerText, centeredX, timerY);
+        int centerY = frame.getHeight() - 47;
+        g.drawString(timerText, centeredX, centerY);
     }
 
     private void printIfNoPath(Graphics g) {

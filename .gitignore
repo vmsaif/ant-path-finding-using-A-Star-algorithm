@@ -1,5 +1,8 @@
 # build artifacts
 bin/
+# Maven
+target/
+
 
 # Compiled class file
 *.class
@@ -37,6 +40,8 @@ Thumbs.db
 
 repush.sh
 
-# include /lib
-!lib/*
-```
+# # include /lib
+# !lib/*
+# ```
+
+lib/
