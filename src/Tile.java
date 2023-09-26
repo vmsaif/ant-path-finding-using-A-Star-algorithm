@@ -29,7 +29,6 @@ public class Tile implements Comparable<Tile> {
     private boolean isSwampland;
     private Tile cameFrom;
     private boolean removeAntImg;
-    private static Color boardDefaultColor = Color.WHITE;
 
     public Tile(int x, int y) {
         this.x = x;
@@ -40,9 +39,9 @@ public class Tile implements Comparable<Tile> {
         this.cameFrom = null;
     }
 
-    public void draw(Graphics g) {
+    public void draw(Graphics g, Color openTerrainColor, Color openTerrainBoarderColor) {
 
-        g.setColor(boardDefaultColor);
+        g.setColor(openTerrainColor);
         g.fillRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize()); // draw the tile background
 
         if (isObstacle) {
@@ -62,11 +61,11 @@ public class Tile implements Comparable<Tile> {
             drawSwampland(g);
         } else {
             // open terrain
-            g.setColor(boardDefaultColor);
+            g.setColor(openTerrainColor);
             g.fillRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
         }
 
-        g.setColor(Color.BLACK);
+        g.setColor(openTerrainBoarderColor);
         g.drawRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
 
     }

@@ -89,12 +89,20 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     private boolean antReached;
     protected boolean startTimer;
 
-    int iconSize; // Define the size of your icons
-    int iconTextSpacing; // Spacing between icon and text
-    int wordSpacing; // Spacing between each icon-count pair
-    double iconScaling;
-    
+    private int iconSize; // Define the size of your icons
+    private int iconTextSpacing; // Spacing between icon and text
+    private int wordSpacing; // Spacing between each icon-count pair
+    private double iconScaling;
 
+    // colors
+    private Color bgColor;
+    private Color openTerrainColor;
+    private Color footerColor;
+    private Color timerFontColor;
+    private Color openTerrainBoarderColor;
+    private Color counterDigitColor;
+
+    
     // images 
     private static Image antImage;
     private static Image foodImg;
@@ -103,6 +111,20 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     private static Image obstacleImg;
 
     public Game(JFrame frame) {
+
+        // change the color if needed
+        
+        bgColor = new Color(234, 242, 255,(int) (0.7 * 255)); // 0.7 is the opacity
+        openTerrainColor = new Color(255, 255, 255, (int) (0.5 * 255));
+        openTerrainBoarderColor = new Color(0, 0, 0, (int) (0.5 * 255));
+
+        counterDigitColor = new Color(255, 0, 0, (int) (1.0 * 255));
+
+        footerColor = new Color(0, 0, 255, (int) (0.1 * 255)); 
+        timerFontColor = new Color(255, 0, 155, (int) (1.0 * 255)); 
+        
+        // -------------------------
+
         this.frame = frame;
         buttonCount = 8; // number of buttons
         // Set the layout manager to a BorderLayout
@@ -638,6 +660,10 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        // Set the background color using a hex value
+        g.setColor(bgColor);  // This is for white color. Change the hex value for different colors.
+        g.fillRect(0, 0, getWidth(), getHeight());  // Fill the entire component's area
+
         printBoardAndCount(g);
 
         // draw ant
@@ -656,13 +682,14 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
         drawTileCount(g);
 
-
     } // end paintComponent
 
     private void drawTileCount(Graphics g) {
         
         // Draw the icons with their counts
         try {
+            g.setColor(counterDigitColor);
+
             g.drawImage(obstacleImg, terrainCountX, terrainCountY, iconSize, iconSize, null);
             g.drawString("" + obstacleCount, terrainCountX + iconSize + iconTextSpacing, terrainCountY + iconSize-3);
 
@@ -673,11 +700,11 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
             g.drawString("" + swamplandCount, terrainCountX + wordSpacing*6 + iconSize + iconTextSpacing, terrainCountY + iconSize-3);
 
             //open terrain
-            g.setColor(Color.WHITE);
+            g.setColor(openTerrainColor);
             g.fillRect(terrainCountX + (int)(wordSpacing*8.5)+ iconSize, terrainCountY+3, (int) (Game.getTileSize()/iconScaling), (int) (Game.getTileSize()/iconScaling));
-            g.setColor(Color.BLACK);
+            g.setColor(openTerrainBoarderColor);
             g.drawRect(terrainCountX + (int)(wordSpacing*8.5) + iconSize, terrainCountY+3, (int) (Game.getTileSize()/iconScaling), (int) (Game.getTileSize()/iconScaling));
-            g.setColor(Color.RED);
+            g.setColor(counterDigitColor);
             g.drawString("" + openTerrainCount, terrainCountX + (int)(wordSpacing*9.25) + iconSize + iconTextSpacing, terrainCountY + iconSize-2);
 
         } catch (NullPointerException e) {
@@ -687,17 +714,17 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
     private void printTimer(Graphics g) {
         // draw a footer for the timer
-        g.setColor(Color.WHITE);
+        g.setColor(footerColor);
         g.fillRect(0, frame.getHeight() - 70, frame.getWidth(), 100);
 
         timerX = frame.getWidth() - 620;
         timerY = frame.getHeight() - 47;
-        g.setColor(Color.RED); // Sets the color to red.
+        g.setColor(timerFontColor); // Sets the color to red.
         g.setFont(new Font("Courier New", Font.PLAIN, 20)); 
         g.drawString("Creation Time: " + elapsedTimeStringBeforeSearch, timerX, timerY);
         g.setColor(Color.BLACK);
         g.drawString("|", timerX + 283, timerY);
-        g.setColor(Color.RED);
+        g.setColor(timerFontColor);
         g.drawString("AI Solving Time: " + elapsedTimeStringAfterAnimation, timerX + 300, timerY);
     }
 
@@ -732,7 +759,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         
         for (int i = 0; i < NUM_ROWS; i++) {
             for (int j = 0; j < NUM_COLS; j++) {
-                tiles[i][j].draw(g);
+                tiles[i][j].draw(g, openTerrainColor, openTerrainBoarderColor);
                 if(tiles[i][j].isObstacle()){
                     obstacle++;
                 } else if(tiles[i][j].isSwampland()){
