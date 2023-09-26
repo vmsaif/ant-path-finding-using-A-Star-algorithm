@@ -91,11 +91,6 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     private boolean antReached;
     protected boolean startTimer;
 
-    private int iconSize; // Define the size of your icons
-    private int iconTextSpacing; // Spacing between icon and text
-    private int wordSpacing; // Spacing between each icon-count pair
-    private double iconScaling;
-
     // colors
     private Color bgColor;
     private Color openTerrainColor;
@@ -164,19 +159,14 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         add(buttonPanel, BorderLayout.NORTH);
         setPreferredSize(new Dimension(getPreferredSize().width + 200, getPreferredSize().height));
 
-        iconSize = 20; // Define the size of your icons
-        iconTextSpacing = 5; // Spacing between icon and text
-        wordSpacing = 25; // Spacing between each icon-count pair
-        iconScaling = 2.5;
+        
     
         tobeDrawn = new LinkedList<Tile>();
 
         // set timer
         elapsedTimeStringBeforeSearch = "0:00:000";
         elapsedTimeStringAfterAnimation = "0:00:000";
-        timerX = 100;
-        timerY = frame.getHeight() - 100;
-       
+        
         setTimerMageCreation();
         setTimerSolving();
 
@@ -191,9 +181,12 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
             public void componentResized(ComponentEvent e) {
 
                 // the top bar location
-                terrainCountX = (int)(frame.getWidth()/2.5);
+                terrainCountX = (int)(frame.getWidth()/2.7);
                 terrainCountY = frame.getHeight()/15;
                 
+                timerX = frame.getWidth() - 480;
+                timerY = frame.getHeight() - 47;
+
                 // set the grid offset/start point
                 int xOffset = (int) ((frame.getWidth() - TILE_SIZE * NUM_COLS) / 2);
                 int yOffset = (int) ((frame.getHeight() - TILE_SIZE * NUM_ROWS) / 1.8);
@@ -711,24 +704,41 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         
         // Draw the icons with their counts
         try {
+            int iconSize = 20; // Define the size of your icons
+            int iconTextSpacing = 5; // Spacing between icon and text
+            int wordSpacing = 25; // Spacing between each icon-count pair
+            double iconScaling = 2.5;
+            int totalIconWidth = 4 * iconSize + 3 * wordSpacing; // 4 icons
+            int totalWidth = totalIconWidth + 3 * iconTextSpacing; // The space after each icon for text
+
+            // Calculate the starting X-coordinate to make the icons and text centered
+            int startX = (frame.getWidth() - totalWidth) / 2;
+
+            terrainCountY = (int) (frame.getHeight() / 15);
+
             g.setColor(counterDigitColor);
 
-            g.drawImage(obstacleImg, terrainCountX, terrainCountY, iconSize, iconSize, null);
-            g.drawString("" + obstacleCount, terrainCountX + iconSize + iconTextSpacing, terrainCountY + iconSize-3);
+            g.drawImage(obstacleImg, startX, terrainCountY, iconSize, iconSize, null);
+            g.drawString("" + obstacleCount, startX + iconSize + iconTextSpacing, terrainCountY + iconSize - 3);
 
-            g.drawImage(grasslandImg, terrainCountX + wordSpacing*3, terrainCountY, iconSize, iconSize, null);
-            g.drawString("" + grasslandCount, terrainCountX + wordSpacing*3 + iconSize + iconTextSpacing, terrainCountY + iconSize-3);
+            startX += iconSize + iconTextSpacing + wordSpacing;
 
-            g.drawImage(swamplandImg, terrainCountX + wordSpacing*6, terrainCountY, iconSize, iconSize, null);
-            g.drawString("" + swamplandCount, terrainCountX + wordSpacing*6 + iconSize + iconTextSpacing, terrainCountY + iconSize-3);
+            g.drawImage(grasslandImg, startX, terrainCountY, iconSize, iconSize, null);
+            g.drawString("" + grasslandCount, startX + iconSize + iconTextSpacing, terrainCountY + iconSize - 3);
 
-            //open terrain
+            startX += iconSize + iconTextSpacing + wordSpacing;
+
+            g.drawImage(swamplandImg, startX, terrainCountY, iconSize, iconSize, null);
+            g.drawString("" + swamplandCount, startX + iconSize + iconTextSpacing, terrainCountY + iconSize - 3);
+
+            startX += iconSize + iconTextSpacing + wordSpacing;
+
             g.setColor(openTerrainColor);
-            g.fillRect(terrainCountX + (int)(wordSpacing*8.5)+ iconSize, terrainCountY+3, (int) (Game.getTileSize()/iconScaling), (int) (Game.getTileSize()/iconScaling));
+            g.fillRect(startX, terrainCountY + 3, (int) (Game.getTileSize() / iconScaling), (int) (Game.getTileSize() / iconScaling));
             g.setColor(openTerrainBoarderColor);
-            g.drawRect(terrainCountX + (int)(wordSpacing*8.5) + iconSize, terrainCountY+3, (int) (Game.getTileSize()/iconScaling), (int) (Game.getTileSize()/iconScaling));
+            g.drawRect(startX, terrainCountY + 3, (int) (Game.getTileSize() / iconScaling), (int) (Game.getTileSize() / iconScaling));
             g.setColor(counterDigitColor);
-            g.drawString("" + openTerrainCount, terrainCountX + (int)(wordSpacing*9.25) + iconSize + iconTextSpacing, terrainCountY + iconSize-2);
+            g.drawString("" + openTerrainCount, startX + iconSize + iconTextSpacing, terrainCountY + iconSize - 2);
 
         } catch (NullPointerException e) {
             System.out.println("Image not found");
@@ -740,15 +750,14 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         g.setColor(footerColor);
         g.fillRect(0, frame.getHeight() - 70, frame.getWidth(), 100);
 
-        timerX = frame.getWidth() - 620;
-        timerY = frame.getHeight() - 47;
         g.setColor(timerFontColor); // Sets the color to red.
         g.setFont(timerFont); 
-        g.drawString("Creation Time: " + elapsedTimeStringBeforeSearch, timerX, timerY);
-        g.setColor(Color.BLACK);
-        g.drawString("|", timerX + 283, timerY);
-        g.setColor(timerFontColor);
-        g.drawString("AI Solving Time: " + elapsedTimeStringAfterAnimation, timerX + 300, timerY);
+
+        String timerText = "Creation Time: " + elapsedTimeStringBeforeSearch + "   |   " + "AI Solving Time: " + elapsedTimeStringAfterAnimation;
+        int stringWidth = g.getFontMetrics().stringWidth(timerText);
+        int centeredX = (frame.getWidth() - stringWidth) / 2;
+
+        g.drawString(timerText, centeredX, timerY);
     }
 
     private void printIfNoPath(Graphics g) {
