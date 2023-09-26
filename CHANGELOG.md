@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - Counter for each tile type. (Shows the number of tiles of each type)
 - Timer 1 - Time took for the user to create mage.
 - Timer 2 - Time took for the AI to solve the Mage solution (duration for AI to **graphically** reach the goal).
+- Window can now be resized.
 
 ### Changed
 
@@ -18,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - Optimized initial rendering speed for the ant image.
 - Button placement from right column to top row.
 - Adjusted ant's speed consistency across different tile type.
+- Remove the word "Location" from the Start and Goal buttons.
 
 ### Fixed
 

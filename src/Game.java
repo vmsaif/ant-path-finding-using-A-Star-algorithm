@@ -31,6 +31,8 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -113,7 +115,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     public Game(JFrame frame) {
 
         // change the color if needed
-        
+
         bgColor = new Color(234, 242, 255,(int) (0.7 * 255)); // 0.7 is the opacity
         openTerrainColor = new Color(255, 255, 255, (int) (0.5 * 255));
         openTerrainBoarderColor = new Color(0, 0, 0, (int) (0.5 * 255));
@@ -133,13 +135,6 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         // Create a panel to hold the buttons
         buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(1, buttonCount, 10, 10));
-
-        // set tile offset
-        int xOffset = (int) ((frame.getWidth() - TILE_SIZE * NUM_COLS) / 2);
-        int yOffset = (int) ((frame.getHeight() - TILE_SIZE * NUM_ROWS) / 1.8);
-
-        Tile.setxOffset(xOffset);
-        Tile.setyOffset(yOffset);
 
         //load all images
         loadImg();
@@ -167,32 +162,43 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         iconSize = 20; // Define the size of your icons
         iconTextSpacing = 5; // Spacing between icon and text
         wordSpacing = 25; // Spacing between each icon-count pair
-
-        terrainCountX = (int)(frame.getWidth()/2.4);
-        terrainCountY = frame.getHeight()/15;
         iconScaling = 2.5;
     
-        startTimer = false;
-        startClicked = false;
-        startTile = null;
-        goalTile = null;
-        startMovingAnt = false;
-        noPath = false;
         tobeDrawn = new LinkedList<Tile>();
-        obstacleCount = 0;
-        swamplandCount = 0;
-        grasslandCount = 0;
-        openTerrainCount = 0;
 
         // set timer
         elapsedTimeStringBeforeSearch = "0:00:000";
         elapsedTimeStringAfterAnimation = "0:00:000";
         timerX = 100;
         timerY = frame.getHeight() - 100;
-
        
         setTimerMageCreation();
         setTimerSolving();
+
+        // resizeble windows
+        resizeWindow();
+        
+    }
+
+    private void resizeWindow() {
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+
+                // the top bar location
+                terrainCountX = (int)(frame.getWidth()/2.5);
+                terrainCountY = frame.getHeight()/15;
+                
+                // set the grid offset/start point
+                int xOffset = (int) ((frame.getWidth() - TILE_SIZE * NUM_COLS) / 2);
+                int yOffset = (int) ((frame.getHeight() - TILE_SIZE * NUM_ROWS) / 1.8);
+
+                Tile.setxOffset(xOffset);
+                Tile.setyOffset(yOffset);
+
+                repaint();
+            }
+        });
     }
 
     private void loadImg() {
@@ -337,7 +343,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     }
 
     private void selectGoalLocation() {
-        JButton result = new JButton("Goal Location");
+        JButton result = new JButton("Goal");
         result.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -353,7 +359,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     }
 
     public void selectStartLocation() {
-        JButton result = new JButton("Start Location");
+        JButton result = new JButton("Start");
         result.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
