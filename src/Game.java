@@ -706,7 +706,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         try {
             int iconSize = 20; // Define the size of your icons
             int iconTextSpacing = 5; // Spacing between icon and text
-            int wordSpacing = 25; // Spacing between each icon-count pair
+            int wordSpacing = 45; // Spacing between each icon-count pair
             double iconScaling = 2.5;
             int totalIconWidth = 4 * iconSize + 3 * wordSpacing; // 4 icons
             int totalWidth = totalIconWidth + 3 * iconTextSpacing; // The space after each icon for text

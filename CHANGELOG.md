@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v2.0.0] - 2023-09-26
+
 ### Added
 
 - Mouse drag support for tile type changes.

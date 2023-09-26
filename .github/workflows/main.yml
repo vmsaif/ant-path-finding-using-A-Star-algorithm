@@ -196,23 +196,20 @@ jobs:
                 --win-menu `
                 --app-version ${{ needs.build.outputs.stripped_version }} `
                 --java-options "${{ env.JVM_ARGS }}" `
-                --type exe `
+                --type msi `
                 --dest .
 
     - name: List contents of out directory (Windows)
       run: Get-ChildItem -Path .
     
-    # - name: Rename Windows standalone
-    #   run: move ${{ env.FILE_NAME }}-1.0.exe ${{ env.OUT_DIR }}/${{ env.FILE_NAME }}-Windows-${{ env.VERSION }}.exe
-
     - name: Attach Windows Standalone to Release
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ needs.build.outputs.release_upload_url }}
-        asset_path: ${{ env.FILE_NAME }}-${{ needs.build.outputs.stripped_version }}.exe
-        asset_name: ${{ env.FILE_NAME }}-${{ needs.build.outputs.stripped_version }}-windows.exe
+        asset_path: ${{ env.FILE_NAME }}-${{ needs.build.outputs.stripped_version }}.msi
+        asset_name: ${{ env.FILE_NAME }}-${{ needs.build.outputs.stripped_version }}-windows.msi
         asset_content_type: application/octet-stream
 
 
