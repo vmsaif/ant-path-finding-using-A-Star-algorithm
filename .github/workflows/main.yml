@@ -42,7 +42,7 @@ jobs:
     - name: Compile and Build JAR
       run: |
         mkdir ${{ env.OUT_DIR }}
-        javac -d ${{ env.OUT_DIR }} src/*.java
+        javac -d ${{ env.OUT_DIR }} -cp lib/*:src/ src/*.java
         # Generate a temporary manifest file using echo
         echo "Main-Class: ${{ env.MAIN_CLASS }}" > customManifest.txt
         jar cvfm ${{ env.OUT_DIR }}/${{ env.FILE_NAME }}-${{ env.VERSION }}.jar \
