@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - Timer 1 - Time took for the user to create mage.
 - Timer 2 - Time took for the AI to solve the Mage solution (duration for AI to **graphically** reach the goal).
 - Window can now be resized.
+- When the App starts, it will start at the center of the screen.
 
 ### Changed
 

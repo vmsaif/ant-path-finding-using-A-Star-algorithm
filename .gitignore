@@ -36,3 +36,7 @@ ehthumbs.db
 Thumbs.db
 
 repush.sh
+
+# include /lib
+!lib/*
+```

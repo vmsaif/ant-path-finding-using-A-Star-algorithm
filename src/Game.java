@@ -642,16 +642,18 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                             startMovingAnt = false;
                             antReached = true;
                         }
-
                     }
 
                     private double setSpeed(Tile nextTile) {
                         double output = Tile.COST_SWAMPLAND; // highest cost 4 for open terrain
 
                         if(nextTile.isSwampland()){
-                            output = (output/Tile.COST_SWAMPLAND) + 0.5; // 1.25
+                            output = (output/Tile.COST_SWAMPLAND) + 1.5; // 1.25
                         } else if(nextTile.isGrassland()){
                             output = output*2/Tile.COST_GRASSLAND + 0.5; // 2.5
+                        } else {
+                            // open terrain 
+                            output = output + 1;
                         }
 
                         return output;
