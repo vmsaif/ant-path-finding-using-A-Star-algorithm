@@ -139,7 +139,7 @@ jobs:
     - name: Download JAR from artifact
       uses: actions/download-artifact@v3
       with:
-        name: ${{ env.FILE_NAME }}-${{ needs.build.outputs.stripped_version }}
+        name: ${{ env.FILE_NAME }}-${{ needs.build.outputs.stripped_version }}.jar
         path: ${{ env.OUT_DIR }}
 
     - name: Create Standalone for Ubuntu
@@ -179,7 +179,7 @@ jobs:
     - name: Download JAR from artifact
       uses: actions/download-artifact@v3
       with:
-        name: ${{ env.FILE_NAME }}-${{ needs.build.outputs.stripped_version }}
+        name: ${{ env.FILE_NAME }}-${{ needs.build.outputs.stripped_version }}.jar
         path: ${{ env.OUT_DIR }}
 
     - name: Setup Java 17
