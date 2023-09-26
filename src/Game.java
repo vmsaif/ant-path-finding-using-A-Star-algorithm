@@ -103,6 +103,8 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     private Color timerFontColor;
     private Color openTerrainBoarderColor;
     private Color counterDigitColor;
+    private Font timerFont;
+    private Font buttonFont;
 
     
     // images 
@@ -116,7 +118,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
         // change the color if needed
 
-        bgColor = new Color(234, 242, 255,(int) (0.7 * 255)); // 0.7 is the opacity
+        bgColor = new Color(234, 242, 255, (int) (0.7 * 255)); // 0.7 is the opacity
         openTerrainColor = new Color(255, 255, 255, (int) (0.5 * 255));
         openTerrainBoarderColor = new Color(0, 0, 0, (int) (0.5 * 255));
 
@@ -124,6 +126,9 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
         footerColor = new Color(0, 0, 255, (int) (0.1 * 255)); 
         timerFontColor = new Color(255, 0, 155, (int) (1.0 * 255)); 
+
+        timerFont = new Font("Courier New", Font.PLAIN, 20);
+        buttonFont = new Font("Arial", Font.PLAIN, 12);
         
         // -------------------------
 
@@ -215,6 +220,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
     private void resetButton() {
         JButton result = new JButton("Reset");
+        result.setFont(buttonFont);
         result.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -253,6 +259,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     private void selectOpenTerrain() {
         // Create the reset button
         JButton result = new JButton("<html>Open Terrain<br/><center><font size='2'>Cost: 1</font></center></html>");
+        result.setFont(buttonFont);
         result.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -269,6 +276,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
     private void selectSwampland() {
         JButton result = new JButton("<html>Swampland<br/><center><font size='2'>Cost: 4</font></center></html>");
+        result.setFont(buttonFont);
         result.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -285,6 +293,8 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
     private void selectGrassland() {
         JButton result = new JButton("<html>Grassland<br/><center><font size='2'>Cost: 3</font></center></html>");
+        result.setFont(buttonFont);
+
         result.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -303,6 +313,8 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     // search button to start the search algorithm
     private JButton searchButton() {
         JButton result = new JButton("A* Search");
+        result.setFont(buttonFont);
+
         result.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -344,6 +356,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
     private void selectGoalLocation() {
         JButton result = new JButton("Goal");
+        result.setFont(buttonFont);
         result.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -360,6 +373,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
     public void selectStartLocation() {
         JButton result = new JButton("Start");
+        result.setFont(buttonFont);
         result.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -376,6 +390,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
     public void selectObstacle() {
         JButton result = new JButton("<html><center>Obstacle<br/><font size='2'>Cost: Impossible</font></center></html>");
+        result.setFont(buttonFont);
         result.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -728,7 +743,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         timerX = frame.getWidth() - 620;
         timerY = frame.getHeight() - 47;
         g.setColor(timerFontColor); // Sets the color to red.
-        g.setFont(new Font("Courier New", Font.PLAIN, 20)); 
+        g.setFont(timerFont); 
         g.drawString("Creation Time: " + elapsedTimeStringBeforeSearch, timerX, timerY);
         g.setColor(Color.BLACK);
         g.drawString("|", timerX + 283, timerY);
