@@ -23,21 +23,13 @@ public class Ant {
     private AStarSearch aStarSearch;
     private LinkedList<LinkedList<Tile>> allPath2D = new LinkedList<LinkedList<Tile>>();
 
-    public Ant(Tile start, Tile goal, int tileSize, Tile[][] tiles) {
+    public Ant(Tile start, Tile goal, int tileSize, Tile[][] tiles, Image antImage) {
         this.start = start;
         this.goal = goal;
         this.tiles = tiles;
-        loadAntImg();
+        this.antImage = antImage;
         antX = start.getXpixel();
         antY = start.getYpixel();
-    }
-
-    private void loadAntImg() {
-        try {
-            antImage = ImageIO.read(getClass().getResource("/assets/images/ant.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void draw(Graphics g, int tileSize) {

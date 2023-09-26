@@ -317,7 +317,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
                 if (startTile != null && goalTile != null) {
                     resetCameFrom(tiles); // useful if the user wants to search for the second time or more
-                    ant = new Ant(startTile, goalTile, TILE_SIZE, tiles);
+                    ant = new Ant(startTile, goalTile, TILE_SIZE, tiles, antImage);
                     startClicked = true;
                     startTimeBeforeAnimation = System.currentTimeMillis();
                     ant.search();
