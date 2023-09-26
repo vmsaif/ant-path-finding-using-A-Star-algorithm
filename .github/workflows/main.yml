@@ -48,7 +48,7 @@ jobs:
         jar cvfm ${{ env.OUT_DIR }}/${{ env.FILE_NAME }}-${{ env.VERSION }}.jar \
               customManifest.txt \
               -C ${{ env.OUT_DIR }} ./ \
-              -C ./ assets/
+              -C ./ assets/ \
               -C lib .
 
 
