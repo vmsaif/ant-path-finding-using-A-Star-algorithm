@@ -42,14 +42,14 @@ public class Tile implements Comparable<Tile> {
     public void draw(Graphics g, Color openTerrainColor, Color openTerrainBoarderColor) {
 
         g.setColor(openTerrainColor);
-        g.fillRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize()); // draw the tile background
+        g.fillRect(getXpixel(), getYpixel(), Game.getTilesize(), Game.getTilesize()); // draw the tile background
 
         if (isObstacle) {
             drawObstacleImage(g);
         } else if (isStart) {
             if (removeAntImg) {
                 g.setColor(Color.LIGHT_GRAY);
-                g.fillRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
+                g.fillRect(getXpixel(), getYpixel(), Game.getTilesize(), Game.getTilesize());
             } else {
                 drawAntImg(g);
             }
@@ -62,17 +62,17 @@ public class Tile implements Comparable<Tile> {
         } else {
             // open terrain
             g.setColor(openTerrainColor);
-            g.fillRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
+            g.fillRect(getXpixel(), getYpixel(), Game.getTilesize(), Game.getTilesize());
         }
 
         g.setColor(openTerrainBoarderColor);
-        g.drawRect(getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize());
+        g.drawRect(getXpixel(), getYpixel(), Game.getTilesize(), Game.getTilesize());
 
     }
 
     private void drawObstacleImage(Graphics g) {
         if (Game.getObstacleImg() != null) {
-            g.drawImage(Game.getObstacleImg(), getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize(), null);
+            g.drawImage(Game.getObstacleImg(), getXpixel(), getYpixel(), Game.getTilesize(), Game.getTilesize(), null);
         } else {
             System.out.println("Obstacle image is null");
         }
@@ -80,7 +80,7 @@ public class Tile implements Comparable<Tile> {
 
     private void drawSwampland(Graphics g) {
         if (Game.getSwamplandImg() != null) {
-            g.drawImage(Game.getSwamplandImg(), getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize(), null);
+            g.drawImage(Game.getSwamplandImg(), getXpixel(), getYpixel(), Game.getTilesize(), Game.getTilesize(), null);
         } else {
             System.out.println("Swampland image is null");
         }
@@ -88,7 +88,7 @@ public class Tile implements Comparable<Tile> {
 
     private void drawGrassland(Graphics g) {
         if (Game.getGrasslandImg() != null) {
-            g.drawImage(Game.getGrasslandImg(), getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize(), null);
+            g.drawImage(Game.getGrasslandImg(), getXpixel(), getYpixel(), Game.getTilesize(), Game.getTilesize(), null);
         } else {
             System.out.println("Grassland image is null");
         }
@@ -96,7 +96,7 @@ public class Tile implements Comparable<Tile> {
 
     private void drawFoodImg(Graphics g) {
         if (Game.getFoodImg() != null) {
-            g.drawImage(Game.getFoodImg(), getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize(), null);
+            g.drawImage(Game.getFoodImg(), getXpixel(), getYpixel(), Game.getTilesize(), Game.getTilesize(), null);
         } else {
             System.out.println("Food image is null");
         }
@@ -104,7 +104,7 @@ public class Tile implements Comparable<Tile> {
 
     private void drawAntImg(Graphics g) {
         if (Game.getAntImg() != null) {
-            g.drawImage(Game.getAntImg(), getXpixel(), getYpixel(), Game.getTileSize(), Game.getTileSize(), null);
+            g.drawImage(Game.getAntImg(), getXpixel(), getYpixel(), Game.getTilesize(), Game.getTilesize(), null);
         } else {
             System.out.println("Ant image is null");
         }
@@ -131,11 +131,11 @@ public class Tile implements Comparable<Tile> {
     }
 
     public int getXpixel() {
-        return (x * Game.getTileSize()) + xOffset;
+        return (x * Game.getTilesize()) + xOffset;
     }
 
     public int getYpixel() {
-        return (y * Game.getTileSize()) + yOffset;
+        return (y * Game.getTilesize()) + yOffset;
     }
 
     public double getCost() {
@@ -282,8 +282,8 @@ public class Tile implements Comparable<Tile> {
         int pixelXmin = getXpixel();
         int pixelYmin = getYpixel();
 
-        int pixelXmax = pixelXmin + Game.getTileSize();
-        int pixelYmax = pixelYmin + Game.getTileSize();
+        int pixelXmax = pixelXmin + Game.getTilesize();
+        int pixelYmax = pixelYmin + Game.getTilesize();
 
         return (mouseX >= pixelXmin && mouseX <= pixelXmax && mouseY >= pixelYmin && mouseY <= pixelYmax);
     }

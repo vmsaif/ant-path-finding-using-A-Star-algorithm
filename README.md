@@ -4,7 +4,7 @@
 
 # About the Game
 
-Dive into a world where you're not just a player, but a creator. In this interactive game, **you** design the maze, but here's the twist: Can you design a maze swiftly, using the least time possible, yet make our AI take the maximum time to find its way? The challenge? Make the AI ponder over your crafty creation. While our AI boasts of solving most mazes in a mere moment, we've added a graphic representation of the ant's journey to allow you to savor the AI's decision-making, one step at a time. The stakes? Your creativity versus AI's intelligence. Don your creator's cap, and let the games begin!
+Dive into a world where you're not just a player, but a creator. In this interactive game, **you** design the maze, but here's the twist: Can you design a maze swiftly, using the least time possible, yet make our AI take the maximum time to find its way? The challenge? Make the AI ponder over your crafty creation. While our AI boasts of solving most mazes in a mere moment, we've added a graphic representation of the ant's journey to allow you to savor the AI's decision-making, one step at a time. The stakes? Your creativity versus AI's intelligence. Get your creator's cap, and let the games begin!
 
 ## Your Journey as a Creator
 
@@ -14,7 +14,7 @@ At the start of the game, you're presented with a blank canvas. Here, you get to
 2. **Craft the Terrain:** Mold the landscape by placing obstacles, open terrains, grasslands, or swamplands. Each terrain type presents a unique challenge to the AI. Grasslands make the ant take longer to cross than open terrains, and swamplands prolong its journey even more. Obstacles? They're the ultimate roadblock, making paths impassable.
 3. **The Ant's Quest:** Once you've crafted your masterpiece, sit back and watch the ant embark on its quest to find the goal. Behind the scenes is the formidable A* algorithm, aided by the Manhattan distance heuristic function. But you don't need to dive into these complexities; your main course is the visual spectacle of the ant navigating its way through the challenges you've set.
 
-Note: You can even make it further challenging by limiting the count of each terrain type. For example, you can limit yourself from using the number of obstacles, grasslandsand, swamplands you can use. This will make the mage creation more challenging.
+Note: You can even make it further challenging by limiting the count of each terrain type. For example, you can limit yourself from using the number of obstacles, grassland, and swamplands you can use. This will make the mage creation more challenging.
 
 ## Logic and Design of Program
 
@@ -96,10 +96,8 @@ You can start the game by searching for it in the applications menu named `ant-p
 
 4. **Run the JAR File**:
    ```bash
-   java -Xmx2G -jar ant-path-finding-v1.0.0.jar # Replace the filename with the name of the JAR file you downloaded
+   java -jar ant-path-finding-v1.0.0.jar # Replace the filename with the name of the JAR file you downloaded
    ```
-
-The `-Xmx2G` is used to allocate 2GB of memory to the program. This is required for complex mazes. If you are running the program on a simple maze, you can remove the -Xmx2G argument.
 
 ## **macOS**
 There are 2 methods. Downloading the dmg file or downloading the jar file. 
@@ -136,9 +134,8 @@ Make sure you have JRE installed on your computer. You can download JRE [here](h
 
 4. **Run the JAR File**:
    ```bash
-   java -Xmx2G -jar ant-path-finding-v1.0.0.jar # Replace the filename with the name of the JAR file you downloaded
+   java -jar ant-path-finding-v1.0.0.jar # Replace the filename with the name of the JAR file you downloaded
    ```
-The `-Xmx2G` is used to allocate 2GB of memory to the program. This is required for complex mazes. If you are running the program on a simple maze, you can remove the -Xmx2G argument.
 
 ## **Windows**
 
@@ -147,7 +144,7 @@ The `-Xmx2G` is used to allocate 2GB of memory to the program. This is required 
 1. Open the folder where you downloaded the MSI file.
 2. Double-click on the MSI file to run it.
 
-At this point, windows smart screen will block the app from running. As I am not a signed developer by Microsoft, this warning will appear. 
+At this point, the Windows smart screen will block the app from running. As I am not a signed developer by Microsoft, this warning will appear. 
 
 3. If you get the warning, click on "More Info" and then click on "Run Anyway".
 4. Wait for the installation to complete.
@@ -159,7 +156,7 @@ At this point, windows smart screen will block the app from running. As I am not
 
    Make sure you have JRE installed on your computer. You can download JRE [here](https://adoptium.net/) or [here](https://www.oracle.com/java/technologies/javase-jre8-downloads.html).
 
-   Ensure that Java is added to your `PATH` so that it can be accessed from the command prompt. During the jre installation, You will have option to add to your path. Is is unchecked by default. Make sure to enable it.  To check if Java is installed, run the following command in Command Prompt or PowerShell:
+   Ensure that Java is added to your `PATH` so that it can be accessed from the command prompt. During the JRE installation, You will have the option to add to your path. It is unchecked by default. Make sure to enable it.  To check if Java is installed, run the following command in Command Prompt or PowerShell:
    ```bash
    java -version
    ```
@@ -172,11 +169,13 @@ At this point, windows smart screen will block the app from running. As I am not
 
 3. **Run the JAR File**:
    ```bash
-   java -Xmx2G -jar ant-path-finding-v1.0.0.jar
+   java -jar ant-path-finding-v1.0.0.jar
    ```
-The `-Xmx2G` is used to allocate 2GB of memory to the program. This is required for complex mazes. If you are running the program on a simple maze, you can remove the -Xmx2G argument.
-
 In all cases, once the commands are followed, the Java application packaged inside the JAR file should start running.
+
+## Screenshots
+
+![Screenshot 1](assets\screenshots\antPathFinding.gif "Computer Playing Black")
 
 ## UNINSTALLING THE PROGRAM
 

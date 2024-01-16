@@ -47,7 +47,7 @@ import javax.swing.JPanel;
 public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
     private JFrame frame;
-    private final static int TILE_SIZE = 40;
+    private static int tileSize;
     private final int NUM_ROWS = 16;
     private final int NUM_COLS = 16;
     private int obstacleCount;
@@ -107,7 +107,13 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
     public Game(JFrame frame) {
 
         // change the color if needed
-
+        double canWidth = frame.getWidth();
+        double canHeight = frame.getHeight();
+        double scale = 6;
+        double ratio = (canWidth/(canHeight * scale))*100;
+        System.out.println(ratio);
+        tileSize = (int)ratio;
+    
         bgColor = new Color(234, 242, 255, (int) (0.7 * 255)); // 0.7 is the opacity
         openTerrainColor = new Color(255, 255, 255, (int) (0.5 * 255));
         openTerrainBoarderColor = new Color(0, 0, 0, (int) (0.5 * 255));
@@ -178,8 +184,8 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
                 // the top bar location
 
                 // set the grid offset/start point
-                int xOffset = (int) ((frame.getWidth() - TILE_SIZE * NUM_COLS) / 2);
-                int yOffset = (int) ((frame.getHeight() - TILE_SIZE * NUM_ROWS) / 1.8);
+                int xOffset = (int) ((frame.getWidth() - tileSize * NUM_COLS) / 2);
+                int yOffset = (int) ((frame.getHeight() - tileSize * NUM_ROWS) / 2.2);
 
                 Tile.setxOffset(xOffset);
                 Tile.setyOffset(yOffset);
@@ -317,7 +323,7 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
                 if (startTile != null && goalTile != null) {
                     resetCameFrom(tiles); // useful if the user wants to search for the second time or more
-                    ant = new Ant(startTile, goalTile, TILE_SIZE, tiles, antImage);
+                    ant = new Ant(startTile, goalTile, tileSize, tiles, antImage);
                     startClicked = true;
                     startTimeBeforeAnimation = System.currentTimeMillis();
                     ant.search();
@@ -674,11 +680,11 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
 
         // draw ant
         if (ant != null) {
-            ant.draw(g, TILE_SIZE);
+            ant.draw(g, tileSize);
         }
 
         // draw path
-        drawPath(g, TILE_SIZE, tobeDrawn);
+        drawPath(g, tileSize, tobeDrawn);
 
         printIfNoPath(g);
 
@@ -724,9 +730,9 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
             terrainCountX += iconSize + iconTextSpacing + wordSpacing;
 
             g.setColor(openTerrainColor);
-            g.fillRect(terrainCountX, terrainCountY + 3, (int) (Game.getTileSize() / iconScaling), (int) (Game.getTileSize() / iconScaling));
+            g.fillRect(terrainCountX, terrainCountY + 3, (int) (Game.getTilesize() / iconScaling), (int) (Game.getTilesize() / iconScaling));
             g.setColor(openTerrainBoarderColor);
-            g.drawRect(terrainCountX, terrainCountY + 3, (int) (Game.getTileSize() / iconScaling), (int) (Game.getTileSize() / iconScaling));
+            g.drawRect(terrainCountX, terrainCountY + 3, (int) (Game.getTilesize() / iconScaling), (int) (Game.getTilesize() / iconScaling));
             g.setColor(counterDigitColor);
             g.drawString("" + openTerrainCount, terrainCountX + iconSize + iconTextSpacing, terrainCountY + iconSize - 2);
 
@@ -877,8 +883,8 @@ public class Game extends JPanel implements MouseListener, MouseMotionListener {
         }
     }
 
-    public static int getTileSize() {
-        return TILE_SIZE;
+    public static int getTilesize() {
+        return tileSize;
     }
 
     public static Image getObstacleImg() {
