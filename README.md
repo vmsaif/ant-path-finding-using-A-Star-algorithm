@@ -176,7 +176,7 @@ In all cases, once the commands are followed, the Java application packaged insi
 ## Screenshots
 
 <img src="assets\screenshots\antPathFinding.gif" width="700" height="400" />
-![Screenshot 1]( "Ant Finding Path")
+
 
 ## UNINSTALLING THE PROGRAM
 
